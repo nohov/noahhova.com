@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Ioskeley Mono';
+  src: url('./assets/fonts/IoskeleyMono-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ioskeley Mono';
+  src: url('./assets/fonts/IoskeleyMono-SemiBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ioskeley Mono';
+  src: url('./assets/fonts/IoskeleyMono-Bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700 900;
+  font-display: swap;
+}
+
+body, button, input, textarea, select, .grid-card *, .site-header *, .hero *, .closing *, footer * {
+  font-family: 'Ioskeley Mono', ui-monospace, monospace !important;
+  font-variant-ligatures: contextual common-ligatures;
+}
