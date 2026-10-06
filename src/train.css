@@ -1,0 +1,113 @@
+.train-solo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: min(1200px, 100%);
+  height: 440px;
+  margin: 16px auto 0;
+  border: 1px solid #30302e;
+  background: #090909;
+}
+.train-solo .train-copy {
+  color: #f1f1ed;
+}
+.train-solo .train-run {
+  position: absolute;
+  top: 50%;
+  bottom: auto;
+}
+.train-solo .train-run img {
+  transform: translateY(-50%);
+  filter: drop-shadow(0 16px 8px rgba(0, 0, 0, 0.35));
+}
+.hero-ascii-train {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  left: 0;
+  width: 730px;
+  height: 146px;
+  pointer-events: none;
+  will-change: transform;
+}
+.hero-ascii-train pre {
+  margin: 0;
+  color: #f1f1ed;
+  font-family: inherit;
+  font-size: 5.5px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  white-space: pre;
+  opacity: 0.92;
+}
+.returning-header {
+  --reveal-x: 0px;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  height: 88px;
+  padding: 0 28px;
+  clip-path: inset(0 calc(100% - var(--reveal-x)) 0 0);
+  will-change: clip-path;
+}
+.returning-header a,
+.returning-header button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f1f1ed;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.returning-logo {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+}
+.returning-header nav {
+  display: flex;
+  gap: 48px;
+  font-size: 15px;
+}
+.returning-connect {
+  justify-self: end;
+  border-bottom: 1px solid #f1f1ed;
+  padding-bottom: 3px;
+  font-size: 12px;
+}
+@media (max-width: 680px) {
+  .train-solo {
+    height: 280px;
+  }
+  .train-solo .train-run {
+    top: 50%;
+    bottom: auto;
+  }
+  .returning-header {
+    height: 70px;
+    padding: 0 16px;
+  }
+  .returning-header nav {
+    display: none;
+  }
+  .returning-logo {
+    font-size: 18px;
+  }
+  .returning-connect {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-ascii-train {
+    transform: translate3d(calc(50vw - 50%), clamp(470px, 74svh, 570px), 0);
+  }
+  .returning-header {
+    clip-path: none;
+  }
+}

@@ -1,0 +1,244 @@
+.about-trigger {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  right: 0;
+  height: 88px;
+  padding: 0 28px;
+  border: 0;
+  background: transparent;
+  color: #f1f1ed;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.about-backdrop {
+  position: fixed;
+  z-index: 9;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  pointer-events: none;
+}
+.about-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.about-panel {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  right: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  width: min(26vw, 460px);
+  height: 100svh;
+  padding: 0 22px;
+  border-left: 0;
+  background: #171717;
+  color: #f1f1ed;
+  transform: translateX(101%);
+}
+.about-panel.is-open {
+  transform: translateX(0);
+}
+.about-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 88px;
+  font-size: 15px;
+}
+.about-panel-header button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.panel-menu-label,
+.mobile-trigger-label,
+.mobile-menu-links,
+.mobile-menu-business {
+  display: none;
+}
+.about-panel-content {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  padding-top: 34px;
+}
+.about-contact h2 {
+  max-width: none;
+  margin: 0 0 38px;
+  font-size: clamp(24px, 1.65vw, 29px);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+.contact-details {
+  display: grid;
+  gap: 3px;
+  font-size: 13px;
+}
+.contact-details > span:first-child {
+  text-transform: uppercase;
+}
+.contact-email {
+  justify-self: start;
+  padding: 0;
+  color: inherit;
+  font-size: 13px;
+  text-decoration: none;
+}
+.contact-email:hover {
+  background: transparent;
+  color: inherit;
+}
+.about-business {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 30px;
+  font-size: 13px;
+}
+.about-business span:first-child {
+  text-transform: uppercase;
+}
+.about-business a {
+  color: inherit;
+  text-decoration: none;
+}
+.about-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.about-actions > a,
+.about-actions .copy-email {
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #30302f;
+  color: #f1f1ed;
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.about-actions > a:hover,
+.about-actions .copy-email:hover {
+  background: #444340;
+  color: #fff;
+}
+.about-follow {
+  margin-top: auto;
+  padding-bottom: 30px;
+}
+.about-follow > span {
+  display: block;
+  margin-bottom: 26px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.about-links {
+  display: grid;
+  gap: 4px;
+}
+.about-links a {
+  color: inherit;
+  font-size: 25px;
+  letter-spacing: -0.045em;
+  text-decoration: none;
+}
+.glyph-text {
+  display: inline;
+}
+.glyph-character {
+  display: inline;
+}
+.about-copy > span:first-child {
+  display: inline-block;
+}
+.about-copy .glyph-character {
+  display: inline;
+}
+@media (max-width: 680px) {
+  .about-trigger {
+    height: 70px;
+    padding: 0 16px;
+    font-size: 11px;
+  }
+  .about-panel {
+    top: 0;
+    right: auto;
+    left: 0;
+    width: 100vw;
+    max-width: none;
+    height: 100svh;
+    padding: 0 16px;
+  }
+  .about-panel-header {
+    height: 70px;
+  }
+  .about-panel-content {
+    min-height: 0;
+    padding-top: 42px;
+  }
+  .desktop-trigger-label,
+  .panel-contact-label,
+  .about-contact,
+  .about-follow {
+    display: none;
+  }
+  .mobile-trigger-label,
+  .panel-menu-label {
+    display: inline;
+  }
+  .mobile-menu-links {
+    display: grid;
+    gap: 2px;
+  }
+  .mobile-menu-links a,
+  .mobile-menu-links button {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: clamp(32px, 9vw, 42px);
+    font-weight: 600;
+    letter-spacing: -0.075em;
+    line-height: 0.95;
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+  }
+  .mobile-menu-business {
+    display: grid;
+    gap: 3px;
+    margin-top: auto;
+    padding-bottom: 24px;
+    font-size: 13px;
+  }
+  .mobile-menu-business span:first-child {
+    text-transform: uppercase;
+  }
+  .mobile-menu-business a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .about-panel.view-contact .panel-contact-label,
+  .about-panel.view-contact .about-contact,
+  .about-panel.view-contact .about-follow {
+    display: block;
+  }
+  .about-panel.view-contact .panel-menu-label,
+  .about-panel.view-contact .mobile-menu-links,
+  .about-panel.view-contact .mobile-menu-business {
+    display: none;
+  }
+}
