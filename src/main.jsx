@@ -498,7 +498,9 @@ function AboutPanel({ isOpen, onClose, view, onShowContact }) {
         <header className="about-panel-header">
           <span className="panel-contact-label">contact</span>
           <span className="panel-menu-label">menu</span>
-          <button type="button" onClick={onClose}>close</button>
+          <button type="button" onClick={onClose}>
+            <GlyphText text="close" />
+          </button>
         </header>
         <div className="about-panel-content">
           <section className="about-contact">
@@ -514,7 +516,6 @@ function AboutPanel({ isOpen, onClose, view, onShowContact }) {
             </div>
           </section>
           <section className="about-follow">
-            <span>follow</span>
             <nav className="about-links" aria-label="Social links">
               <a
                 href="https://www.linkedin.com/in/noahhova/"
@@ -527,7 +528,7 @@ function AboutPanel({ isOpen, onClose, view, onShowContact }) {
                 <GlyphText text="x / @noahhova" />
               </a>
               <a
-                href="https://github.com/nohov/NoHo"
+                href="https://github.com/nohov"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -582,17 +583,17 @@ function App() {
               <GlyphText text="now" />
             </button>
           </nav>
+          <button
+            className="about-trigger"
+            type="button"
+            onClick={openPanel}
+            aria-expanded={aboutOpen}
+            aria-controls="about-panel"
+          >
+            <span className="desktop-trigger-label"><GlyphText text="contact" /></span>
+            <span className="mobile-trigger-label"><GlyphText text="menu" /></span>
+          </button>
         </header>
-        <button
-          className="about-trigger"
-          type="button"
-          onClick={openPanel}
-          aria-expanded={aboutOpen}
-          aria-controls="about-panel"
-        >
-          <span className="desktop-trigger-label"><GlyphText text="contact" /></span>
-          <span className="mobile-trigger-label"><GlyphText text="menu" /></span>
-        </button>
         <div className="intro-panel" ref={introRef}>
           <p>hey, i’m noah</p>
           <p>
