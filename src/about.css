@@ -1,4 +1,5 @@
 .about-trigger {
+  grid-column: 3;
   justify-self: end;
   padding: 0;
   border: 0;
