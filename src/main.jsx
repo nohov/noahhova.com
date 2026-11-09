@@ -1,254 +1,144 @@
 import { createRoot } from "react-dom/client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./styles.css";
-import "./about.css";
 import Statue from "./Statue";
 
-function GlyphText({ text }) {
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const [frame, setFrame] = useState(0);
-  const accentedLetters = "åæçðéëíñøößüýžłþ";
-  const diacritics = [
-    "\u0301",
-    "\u0300",
-    "\u0308",
-    "\u0302",
-    "\u0303",
-    "\u0304",
-    "\u0323",
-    "\u0324",
-    "\u0327",
-  ];
+const email = "me@noahhova.com";
 
-  useEffect(() => {
-    if (activeIndex < 0) return undefined;
-    let animationFrame;
-    let lastFrame = -1;
-    const animate = (time) => {
-      const nextFrame = Math.floor(time / 45);
-      if (nextFrame !== lastFrame) {
-        lastFrame = nextFrame;
-        setFrame(nextFrame);
-      }
-      animationFrame = window.requestAnimationFrame(animate);
-    };
-    animationFrame = window.requestAnimationFrame(animate);
-    return () => window.cancelAnimationFrame(animationFrame);
-  }, [activeIndex]);
-
-  return (
-    <span className="glyph-text" onPointerLeave={() => setActiveIndex(-1)}>
-      {[...text].map((character, index) => (
-        <span
-          className="glyph-character"
-          key={`${character}-${index}`}
-          onPointerEnter={() => {
-            if (character !== " ") setActiveIndex(index);
-          }}
-        >
-          {activeIndex >= 0 &&
-          /[a-z]/i.test(character) &&
-          Math.abs(activeIndex - index) <= 1
-            ? (index + activeIndex + frame) % 2 === 0
-              ? accentedLetters[(index + activeIndex + frame) % accentedLetters.length]
-              : `${character}${diacritics[(index + activeIndex + frame) % diacritics.length]}`
-            : character}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-function CopyEmail({ address, className = "", label = address }) {
+function CopyEmail() {
   const [copied, setCopied] = useState(false);
-
   useEffect(() => {
-    if (!copied) return;
-    const reset = setTimeout(() => setCopied(false), 2000);
-    return () => clearTimeout(reset);
+    if (!copied) return undefined;
+    const timeout = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timeout);
   }, [copied]);
 
-  const copy = async () => {
+  async function copy() {
     try {
-      await navigator.clipboard.writeText(address);
+      await navigator.clipboard.writeText(email);
     } catch {
-      const scratch = document.createElement("textarea");
-      scratch.value = address;
-      scratch.setAttribute("readonly", "");
-      scratch.style.position = "fixed";
-      scratch.style.opacity = "0";
-      document.body.appendChild(scratch);
-      scratch.select();
+      const field = document.createElement("textarea");
+      field.value = email;
+      document.body.appendChild(field);
+      field.select();
       document.execCommand("copy");
-      document.body.removeChild(scratch);
+      field.remove();
     }
     setCopied(true);
-  };
+  }
 
-  return (
-    <button
-      className={`copy-email ${className}`}
-      type="button"
-      onClick={copy}
-      title="Click to copy"
-    >
-      <span aria-hidden="true">{copied ? "copied!" : label}</span>
-      <span className="visually-hidden" aria-live="polite">
-        {copied
-          ? `${address} copied to clipboard`
-          : `Copy ${address} to clipboard`}
-      </span>
-    </button>
-  );
-}
-
-function AboutPanel({ isOpen, onClose, view, onShowContact }) {
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const closeOnEscape = (event) => event.key === "Escape" && onClose();
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [isOpen, onClose]);
-
-  return (
-    <>
-      <button
-        className={`about-backdrop ${isOpen ? "is-open" : ""}`}
-        aria-label="Close about panel"
-        tabIndex={isOpen ? 0 : -1}
-        onClick={onClose}
-      />
-      <aside
-        id="about-panel"
-        className={`about-panel view-${view} ${isOpen ? "is-open" : ""}`}
-        aria-hidden={!isOpen}
-        aria-label="About Noah"
-      >
-        <header className="about-panel-header">
-          <span className="panel-contact-label">contact</span>
-          <span className="panel-menu-label">menu</span>
-          <button type="button" onClick={onClose}>
-            <GlyphText text="close" />
-          </button>
-        </header>
-        <div className="about-panel-content">
-          <section className="about-contact">
-            <h2>General contacts</h2>
-            <div className="contact-details">
-              <span>emails</span>
-              <CopyEmail
-                className="contact-email"
-                address="me@noahhova.com"
-              />
-            </div>
-          </section>
-          <section className="about-follow">
-            <nav className="about-links" aria-label="Social links">
-              <a
-                href="https://www.linkedin.com/in/noahhova/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <GlyphText text="linkedin" />
-              </a>
-              <a href="https://x.com/NoahHova" target="_blank" rel="noreferrer">
-                <GlyphText text="x / @noahhova" />
-              </a>
-              <a
-                href="https://github.com/nohov"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <GlyphText text="github" />
-              </a>
-            </nav>
-          </section>
-          <nav className="mobile-menu-links" aria-label="Site menu">
-            <a href="#top" onClick={onClose}>
-              work
-            </a>
-            <a href="#top" onClick={onClose}>
-              now
-            </a>
-            <button type="button" onClick={onShowContact}>
-              contact
-            </button>
-          </nav>
-          <div className="mobile-menu-business">
-            <span>new business</span>
-            <span>noah hova</span>
-            <a href="mailto:me@noahhova.com">me@noahhova.com</a>
-          </div>
-        </div>
-      </aside>
-    </>
-  );
+  return <button className="copy-email" type="button" onClick={copy}>{copied ? "Copied to clipboard" : "Copy email"}</button>;
 }
 
 function App() {
-  const [aboutOpen, setAboutOpen] = useState(false);
-  const [panelView, setPanelView] = useState("contact");
+  const heroRef = useRef(null);
+  const menuRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const openPanel = () => {
-    setPanelView(window.matchMedia("(max-width: 680px)").matches ? "menu" : "contact");
-    setAboutOpen(true);
-  };
+  useEffect(() => {
+    const hero = heroRef.current;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const progress = Math.min(1, Math.max(0, scrollY / hero.offsetHeight));
+      hero.style.setProperty("--hero-progress", progress.toFixed(3));
+      hero.dataset.progress = progress.toFixed(3);
+      for (const section of document.querySelectorAll("main > section")) {
+        if (section.getBoundingClientRect().top <= innerHeight * .5) document.body.dataset.activeSection = section.id;
+      }
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    const move = (event) => {
+      if (reducedMotion.matches) return;
+      hero.style.setProperty("--pointer-x", `${((event.clientX / innerWidth - .5) * 22).toFixed(1)}px`);
+      hero.style.setProperty("--pointer-y", `${((event.clientY / innerHeight - .5) * 14).toFixed(1)}px`);
+    };
+    update();
+    addEventListener("scroll", schedule, { passive: true });
+    addEventListener("resize", schedule);
+    hero.addEventListener("pointermove", move);
+    return () => {
+      cancelAnimationFrame(frame);
+      removeEventListener("scroll", schedule);
+      removeEventListener("resize", schedule);
+      hero.removeEventListener("pointermove", move);
+    };
+  }, []);
 
-  return (
+  useEffect(() => {
+    const dialog = menuRef.current;
+    if (menuOpen && !dialog.open) dialog.showModal();
+    if (!menuOpen && dialog.open) dialog.close();
+    document.body.classList.toggle("menu-open", menuOpen);
+    return () => document.body.classList.remove("menu-open");
+  }, [menuOpen]);
+
+  function menuNavigate(event) {
+    event.preventDefault();
+    const target = event.currentTarget.getAttribute("href");
+    setMenuOpen(false);
+    requestAnimationFrame(() => {
+      document.querySelector(target)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+      history.replaceState(null, "", target);
+    });
+  }
+
+  return <>
+    <header className="site-header">
+      <a className="brand" href="#top" aria-label="Noah Hova, back to top"><span className="brand-mark" aria-hidden="true">N</span><span>Noah Hova <small>Notes from the internet</small></span></a>
+      <div className="header-actions">
+        <a className="contact-pill" href="#contact">Get in touch</a>
+        <button className="menu-trigger" type="button" onClick={() => setMenuOpen(true)} aria-label="Open menu" aria-haspopup="dialog" aria-expanded={menuOpen}><span /><span /></button>
+      </div>
+    </header>
+
     <main>
-      <section className="intro-stage" id="top">
-        <header className="returning-header">
-          <span aria-hidden="true" />
-          <nav aria-label="Primary navigation">
-            <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-              <GlyphText text="work" />
-            </button>
-            <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-              <GlyphText text="now" />
-            </button>
-          </nav>
-          <button
-            className="about-trigger"
-            type="button"
-            onClick={openPanel}
-            aria-expanded={aboutOpen}
-            aria-controls="about-panel"
-          >
-            <span className="desktop-trigger-label"><GlyphText text="contact" /></span>
-            <span className="mobile-trigger-label"><GlyphText text="menu" /></span>
-          </button>
-        </header>
-        <div className="intro-panel">
-          <p>hey, i’m noah</p>
-          <p>
-            i grew up in queens. i study mathematics and applied math at
-            stony brook university.
-          </p>
-          <p>
-            i believe ai will change society as much as every previous
-            technological revolution if not more. as cgp grey puts it, first
-            machines replaced muscle, now they’re replacing minds.
-          </p>
-          <p>
-            i’m online pretty much all the time. most of what i know, i learned
-            from the internet, and most of what i build lives there too.
-          </p>
-          <p>
-            <CopyEmail address="me@noahhova.com" />
-          </p>
+      <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title" data-progress="0.000">
+        <div className="hero-landscape" aria-hidden="true" /><div className="hero-shade" aria-hidden="true" /><div className="hero-grain" aria-hidden="true" />
+        <div className="hero-frame">
+          <p className="frame-label">An internet native from Queens</p>
+          <h1 id="hero-title">Ideas<br />in <em>motion.</em></h1>
+          <div className="frame-bottom">
+            <p>Math, AI, and a lifelong curiosity about what comes next.</p>
+            <nav className="hero-index" aria-label="Explore sections">
+              <a href="#about">About <span>01</span></a><a href="#now">Now <span>02</span></a><a href="#contact">Contact <span>03</span></a>
+            </nav>
+          </div>
         </div>
-        <figure className="intro-art">
-          <Statue />
-        </figure>
+        <figure className="hero-statue"><Statue /></figure>
+        <span className="hero-issue" aria-hidden="true">NO. 001 / 2026</span>
+        <a className="scroll-prompt" href="#about">Scroll to explore <span aria-hidden="true">↓</span></a>
       </section>
-      <AboutPanel
-        isOpen={aboutOpen}
-        onClose={() => setAboutOpen(false)}
-        view={panelView}
-        onShowContact={() => setPanelView("contact")}
-      />
+
+      <section className="chapter chapter-about" id="about" aria-labelledby="about-title">
+        <div className="chapter-topline"><span>01 / About</span><span>Noah Hova</span></div>
+        <div className="chapter-grid">
+          <h2 id="about-title">From Queens<br />to <em>everywhere.</em></h2>
+          <div className="chapter-copy"><p className="chapter-lead">I grew up in Queens and study mathematics and applied math at Stony Brook University.</p><p>Most of what I know, I learned from the internet. Most of what I build lives there too.</p><a className="chapter-next" href="#now">What I’m thinking about <span aria-hidden="true">↘</span></a></div>
+        </div>
+        <span className="chapter-ornament" aria-hidden="true">N<span>✦</span>H</span>
+      </section>
+
+      <section className="chapter chapter-now" id="now" aria-labelledby="now-title">
+        <div className="chapter-topline"><span>02 / Now</span><span>Always in progress</span></div>
+        <div className="now-layout"><p className="now-kicker">A working hypothesis</p><h2 id="now-title">The next<br /><em>big shift</em><br />is already here.</h2><p>I believe AI will change society as much as earlier technological revolutions. I’m learning, building, and trying to understand what that means in practice.</p><a className="chapter-next" href="#contact">Continue the conversation <span aria-hidden="true">↘</span></a></div>
+        <div className="now-orbit" aria-hidden="true"><span /></div>
+      </section>
+
+      <section className="chapter chapter-contact" id="contact" aria-labelledby="contact-title">
+        <div className="chapter-topline"><span>03 / Contact</span><span>Open to conversation</span></div>
+        <div className="contact-content"><p>Have an idea?</p><h2 id="contact-title">Let’s talk<br /><em>about it.</em></h2><div className="contact-row"><a className="email-link" href={`mailto:${email}`}>{email}</a><CopyEmail /></div><nav className="social-links" aria-label="Social links"><a href="https://www.linkedin.com/in/noahhova/" target="_blank" rel="noreferrer">LinkedIn ↗</a><a href="https://x.com/NoahHova" target="_blank" rel="noreferrer">X ↗</a><a href="https://github.com/nohov" target="_blank" rel="noreferrer">GitHub ↗</a></nav></div>
+        <a className="back-to-top" href="#top">Back to top ↑</a>
+      </section>
     </main>
-  );
+
+    <dialog className="site-menu" ref={menuRef} onClose={() => setMenuOpen(false)} aria-label="Site menu">
+      <div className="menu-heading"><span>Noah Hova / Index</span><button type="button" onClick={() => setMenuOpen(false)} aria-label="Close menu">Close ×</button></div>
+      <nav aria-label="Menu navigation"><a href="#top" onClick={menuNavigate}><span>00</span> Home <span>↗</span></a><a href="#about" onClick={menuNavigate}><span>01</span> About <span>↗</span></a><a href="#now" onClick={menuNavigate}><span>02</span> Now <span>↗</span></a><a href="#contact" onClick={menuNavigate}><span>03</span> Contact <span>↗</span></a></nav>
+      <p className="menu-footer">Queens, New York · Online everywhere</p>
+    </dialog>
+  </>;
 }
 
 createRoot(document.getElementById("root")).render(<App />);

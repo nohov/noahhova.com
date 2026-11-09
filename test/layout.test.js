@@ -3,7 +3,15 @@ import assert from "node:assert/strict";
 import { chromium, firefox, webkit } from "playwright";
 import { createServer } from "vite";
 
-test("the artwork and copy fit resized and full-screen browser windows", async () => {
+const viewports = [
+  { width: 320, height: 640 },
+  { width: 390, height: 844 },
+  { width: 768, height: 1024 },
+  { width: 1440, height: 900 },
+  { width: 1920, height: 1080 },
+];
+
+test("editorial landing page meets layout and interaction targets", async () => {
   const server = await createServer({ server: { host: "127.0.0.1", port: 0 } });
   await server.listen();
   let browser;
@@ -12,53 +20,87 @@ test("the artwork and copy fit resized and full-screen browser windows", async (
     const { port } = server.httpServer.address();
     for (const browserType of [chromium, firefox, webkit]) {
       browser = await browserType.launch();
-      const page = await browser.newPage({ viewport: { width: 320, height: 640 } });
+      const page = await browser.newPage();
+      const errors = [];
+      page.on("pageerror", (error) => errors.push(error.message));
       await page.goto(`http://127.0.0.1:${port}/`);
+      await page.locator(".hero-statue canvas").waitFor({ state: "visible" });
       await page.waitForFunction(() => {
-        const canvas = document.querySelector(".intro-art canvas");
+        const canvas = document.querySelector(".hero-statue canvas");
+        if (!canvas?.width || !canvas?.height) return false;
         const pixels = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height).data;
         for (let i = 3; i < pixels.length; i += 4) if (pixels[i]) return true;
         return false;
       });
-      for (const [width, height] of [
-        [320, 640], [390, 844], [540, 700], [681, 720], [768, 1024],
-        [681, 350], [900, 400], [900, 500], [1207, 713],
-        [1280, 800], [1366, 768], [1440, 600], [1440, 900],
-        [1512, 780], [1512, 861], [1512, 982], [1920, 800], [1920, 1080],
-        [2560, 1440], [3440, 1440], [3840, 2160], [390, 844],
-      ]) {
-        await page.setViewportSize({ width, height });
-        const layout = await page.evaluate(() => {
-          const art = document.querySelector(".intro-art canvas").getBoundingClientRect();
-          const copy = document.querySelector(".intro-panel").getBoundingClientRect();
-          const heading = document.querySelector(".intro-panel p:first-child");
+
+      for (const viewport of viewports) {
+        await page.setViewportSize(viewport);
+        await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+        const result = await page.evaluate(() => {
+          const rect = (selector) => {
+            const { x, y, width, height } = document.querySelector(selector).getBoundingClientRect();
+            return { x, y, width, height };
+          };
+          const canvas = document.querySelector(".hero-statue canvas");
+          const pixels = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height).data;
+          let painted = false;
+          for (let i = 3; i < pixels.length; i += 4) if (pixels[i]) { painted = true; break; }
           return {
-            art: { left: art.left, top: art.top, right: art.right, bottom: art.bottom },
-            copy: { left: copy.left, top: copy.top, right: copy.right, bottom: copy.bottom },
-            headingSize: parseFloat(getComputedStyle(heading).fontSize),
-            bodySize: parseFloat(getComputedStyle(document.querySelector(".intro-panel")).fontSize),
-            scrollWidth: document.documentElement.scrollWidth,
+            hero: rect(".hero"), frame: rect(".hero-frame"), heading: rect(".hero h1"), statue: rect(".hero-statue"),
+            frameBottom: rect(".frame-bottom"), brand: rect(".brand"), actions: rect(".header-actions"),
+            landscape: getComputedStyle(document.querySelector(".hero-landscape")).backgroundImage,
+            statueTransform: getComputedStyle(document.querySelector(".hero-statue")).transform,
+            painted, scrollWidth: document.documentElement.scrollWidth,
           };
         });
-
-        const size = `${browserType.name()} ${width}x${height}`;
-        assert.ok(layout.art.left >= 0 && layout.art.top >= 0, `${size}: art starts outside the viewport`);
-        assert.ok(layout.art.right <= width && layout.art.bottom <= height, `${size}: art ends outside the viewport`);
-        if (width >= 1280 && height >= 700) assert.ok(layout.copy.top >= 0 && layout.copy.bottom <= height, `${size}: copy is clipped in a full-screen window`);
-        if (width >= 3000) assert.ok(layout.art.right - layout.art.left >= width * 0.22, `${size}: art is too small in a full-screen window`);
-        if (width >= 2500 && height >= 1000) assert.ok(layout.bodySize >= 20, `${size}: text is too small in a full-screen window`);
-        assert.ok(layout.scrollWidth <= width, `${size}: horizontal overflow`);
-        assert.ok(layout.headingSize <= 28, `${size}: heading is too large`);
-
+        const name = `${browserType.name()} ${viewport.width}x${viewport.height}`;
+        assert.ok(result.hero.height >= viewport.height - 1, `${name}: hero ${result.hero.height}px does not fill viewport`);
+        assert.ok(result.frame.x >= 0 && result.frame.x + result.frame.width <= viewport.width, `${name}: frame clips horizontally`);
+        assert.ok(result.heading.y >= result.frame.y && result.heading.y + result.heading.height <= result.frame.y + result.frame.height, `${name}: heading clips frame`);
+        assert.ok(result.frameBottom.y + result.frameBottom.height <= result.frame.y + result.frame.height, `${name}: index clips frame`);
+        assert.ok(result.actions.x > result.brand.x + result.brand.width, `${name}: header overlaps`);
+        assert.ok(result.actions.x + result.actions.width <= viewport.width, `${name}: header clips`);
+        assert.ok(result.scrollWidth <= viewport.width, `${name}: horizontal overflow`);
+        assert.ok(result.landscape.includes("renaissance-landscape"), `${name}: landscape missing`);
+        assert.ok(result.painted, `${name}: statue canvas is empty`);
+        assert.notEqual(result.statueTransform, "none", `${name}: visual response is inactive`);
+        if (viewport.width <= 600) assert.ok(result.statue.y + result.statue.height < result.frameBottom.y, `${name}: statue covers the hero copy`);
       }
-      await page.setViewportSize({ width: 1207, height: 713 });
-      await page.locator(".intro-panel").evaluate((panel) => { panel.style.fontSize = "32px"; });
-      await page.locator(".intro-panel p:first-child").evaluate((heading) => { heading.style.fontSize = "56px"; });
-      const enlargedArt = await page.locator(".intro-art canvas").boundingBox();
-      assert.ok(enlargedArt.y >= 0 && enlargedArt.y + enlargedArt.height <= 713, `${browserType.name()}: enlarged text clips the art`);
-      await page.locator(".intro-panel .copy-email").scrollIntoViewIfNeeded();
-      const email = await page.locator(".intro-panel .copy-email").boundingBox();
-      assert.ok(email.y >= 0 && email.y + email.height <= 713, `${browserType.name()}: enlarged copy cannot be reached`);
+
+      await page.setViewportSize({ width: 390, height: 844 });
+      const beforeMove = await page.locator(".hero-statue").evaluate((element) => getComputedStyle(element).transform);
+      await page.mouse.move(350, 300);
+      const afterMove = await page.locator(".hero-statue").evaluate((element) => getComputedStyle(element).transform);
+      assert.notEqual(afterMove, beforeMove, `${browserType.name()}: pointer parallax does not respond`);
+      await page.getByRole("button", { name: "Open menu" }).click();
+      assert.equal(await page.locator("dialog").evaluate((dialog) => dialog.open), true);
+      assert.equal(await page.getByRole("button", { name: "Open menu" }).getAttribute("aria-expanded"), "true");
+      await page.keyboard.press("Escape");
+      assert.equal(await page.locator("dialog").evaluate((dialog) => dialog.open), false);
+      await page.getByRole("button", { name: "Open menu" }).click();
+      await page.getByRole("navigation", { name: "Menu navigation" }).getByRole("link", { name: /Now/ }).click();
+      await page.waitForURL(/#now$/);
+      await page.waitForFunction(() => document.body.dataset.activeSection === "now");
+      assert.equal(await page.locator("dialog").evaluate((dialog) => dialog.open), false);
+      await page.locator(".back-to-top").click();
+      await page.waitForFunction(() => document.body.dataset.activeSection === "top");
+      await page.evaluate(() => scrollTo({ top: document.querySelector(".hero").offsetHeight * .6, behavior: "instant" }));
+      await page.waitForFunction(() => Number(document.querySelector(".hero").dataset.progress) >= .55);
+      await page.locator("#contact").scrollIntoViewIfNeeded();
+      await page.getByRole("button", { name: "Copy email" }).click();
+      await page.getByRole("button", { name: "Copied to clipboard" }).waitFor();
+      assert.deepEqual(errors, [], `${browserType.name()}: browser errors`);
+
+      const reducedPage = await browser.newPage({ reducedMotion: "reduce" });
+      await reducedPage.goto(`http://127.0.0.1:${port}/`);
+      await reducedPage.locator(".hero-landscape").waitFor();
+      const reduced = await reducedPage.evaluate(() => ({
+        scroll: getComputedStyle(document.documentElement).scrollBehavior,
+        landscape: getComputedStyle(document.querySelector(".hero-landscape")).transform,
+        statue: getComputedStyle(document.querySelector(".hero-statue")).transform,
+      }));
+      assert.deepEqual(reduced, { scroll: "auto", landscape: "none", statue: "none" }, `${browserType.name()}: reduced motion is not honored`);
+      await reducedPage.close();
       await page.close();
       await browser.close();
       browser = undefined;
