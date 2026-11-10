@@ -1,7 +1,7 @@
 :root { font-family: Arial, Helvetica, sans-serif; color: #f4f2e9; background: #101b19; font-synthesis: none; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; }
+body { margin: 0; }
 body.menu-open { overflow: hidden; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
@@ -160,6 +160,14 @@ body[data-header-tone="dark"] .contact-pill { background: #172018; color: #fff; 
   .hero h1 { font-size: clamp(48px,7vw,90px); }
   .frame-bottom > p { font-size: 16px; margin-bottom: 10px; }
   .hero-index a { font-size: 17px; padding: 4px 0; }
+}
+@media (max-width: 319px) {
+  .site-header { padding-right: 8px; padding-left: 8px; }
+  .brand small { display: none; }
+  .contact-pill { padding-right: 8px; padding-left: 8px; }
+  .hero-frame { width: 82%; }
+  .hero h1 { font-size: 46px; }
+  .hero-statue { right: -24%; bottom: 47%; width: 50vw; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

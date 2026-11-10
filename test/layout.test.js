@@ -4,6 +4,7 @@ import { chromium, firefox, webkit } from "playwright";
 import { createServer } from "vite";
 
 const viewports = [
+  { width: 280, height: 620 },
   { width: 320, height: 640 },
   { width: 390, height: 844 },
   { width: 768, height: 1024 },

@@ -4,7 +4,7 @@ This branch adapts the Winter 2026 Editions presentation style to Noah Hova's co
 
 Run `npm ci`, `npm run test:setup`, and `npm test`. The test command builds the production site, then runs browser and offline checks.
 
-The browser suite checks Chromium, Firefox, and WebKit at 320×640, 390×844, 768×1024, 1440×900, and 1920×1080. Its acceptance parameters are:
+The browser suite checks Chromium, Firefox, and WebKit at 280×620, 320×640, 390×844, 768×1024, 1440×900, and 1920×1080. Its acceptance parameters are:
 
 1. The hero fills the first screen, the framed title and index fit, the compact mobile scroll prompt is visible, and no horizontal overflow occurs.
 2. The header remains separate from its actions; mobile figure artwork covers neither the heading nor the copy. Primary mobile tap targets measure at least 44×44 CSS pixels (one-pixel rounding tolerance).
