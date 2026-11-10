@@ -9,7 +9,7 @@ Reviewed November 10, 2026. These are applications for Noah's one-page personal 
 | [Hoverstate](https://www.hoverstate.design/) | Its gallery links to live production sites so layouts and motion can be inspected at different widths. | Compare Noah's hero, direct contact links, and motion at iPhone and desktop sizes. Keep automated viewport tests as measurable guardrails. |
 | [Paper](https://paper.design/) | Its design workflow uses real content and web-standard HTML/CSS, with desktop and mobile frames shown together. | Test the actual Noah copy and project links in 320–440px frames before adding content; keep one HTML/CSS experience for phone and desktop instead of a separate app shell. |
 
-When the hero-only scope expands, prioritize real work samples, then dated notes. The hero introduces Noah's interests but gives visitors no work to inspect yet. More motion would make that information gap more visible, not solve it.
+With the new Projects view, prioritize real work samples before adding dated notes or further motion. The two current cards link to verified public work; future cards should make the same distinction between prototypes and finished products.
 
 ## Hero background research
 

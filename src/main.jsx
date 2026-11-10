@@ -1,15 +1,23 @@
 import { createRoot } from "react-dom/client";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import "./styles.css";
 
 const requestedBackground = new URLSearchParams(location.search).get("background");
-const background = ["cloud", "queens", "topographic"].includes(requestedBackground) ? requestedBackground : "original";
+const background = ["original", "cloud", "queens", "topographic"].includes(requestedBackground) ? requestedBackground : "queens";
 
 function App() {
   const heroRef = useRef(null);
+  const [view, setView] = useState(location.hash === "#projects" ? "projects" : "home");
+
+  useLayoutEffect(() => {
+    const syncView = () => setView(location.hash === "#projects" ? "projects" : "home");
+    addEventListener("hashchange", syncView);
+    return () => removeEventListener("hashchange", syncView);
+  }, []);
 
   useLayoutEffect(() => {
     const hero = heroRef.current;
+    if (!hero) return;
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
 
@@ -38,16 +46,19 @@ function App() {
       hero.removeEventListener("touchstart", move);
       hero.removeEventListener("touchmove", move);
     };
-  }, []);
+  }, [view]);
 
   return <>
     <header className="site-header">
-      <a className="brand" href="#top" aria-label="Noah Hova, home"><span className="brand-mark" aria-hidden="true">N</span><span>Noah Hova <small>Notes from the internet</small></span></a>
-      <a className="contact-pill" href="mailto:me@noahhova.com">Get in touch</a>
+      <a className="brand" href="#top" aria-label="Noah Hova, home" aria-current={view === "home" ? "page" : undefined}><span className="brand-mark" aria-hidden="true">N</span><span>Noah Hova <small>Notes from the internet</small></span></a>
+      <nav className="site-nav" aria-label="Site">
+        <a className="projects-nav" href="#projects" aria-current={view === "projects" ? "page" : undefined}>Projects <span aria-hidden="true">↗</span></a>
+        <a className="contact-pill" href="mailto:me@noahhova.com">Get in touch</a>
+      </nav>
     </header>
 
     <main>
-      <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title" data-background={background}>
+      {view === "home" ? <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title" data-background={background}>
         <div className="hero-landscape" aria-hidden="true" />
         <div className="hero-shade" aria-hidden="true" />
         <div className="hero-grain" aria-hidden="true" />
@@ -62,7 +73,34 @@ function App() {
             </nav>
           </div>
         </div>
-      </section>
+      </section> : <section className="projects" id="projects" aria-labelledby="projects-title">
+        <div className="projects-intro">
+          <p className="projects-kicker">Selected work / 01—02</p>
+          <h1 id="projects-title">Projects in <em>progress.</em></h1>
+          <p>Things I’m building and learning in public.</p>
+        </div>
+        <div className="project-grid">
+          <article className="project-card">
+            <div className="project-art project-art-scav" aria-hidden="true"><span>01</span><b>SCAV<br />SCRAP</b><i>↗</i></div>
+            <div className="project-copy">
+              <p className="project-meta">Hardware + AI <span>In progress</span></p>
+              <h2>ScavScrap</h2>
+              <p>Exploring a glasses-to-PC electronics guide. A camera relay and early recognition experiment are built; the guided lesson is still in development.</p>
+              <a href="https://github.com/nohov/Sightcuit" target="_blank" rel="noreferrer">Explore the repository <span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+          <article className="project-card">
+            <div className="project-art project-art-ml" aria-hidden="true"><span>02</span><b>∑<br />ML</b><i>↗</i></div>
+            <div className="project-copy">
+              <p className="project-meta">Machine learning <span>Ongoing practice</span></p>
+              <h2>Deep-ML</h2>
+              <p>Five hand-written solutions to machine learning and math problems, collected in a public repository.</p>
+              <a href="https://github.com/nohov/deep-ml" target="_blank" rel="noreferrer">Explore the repository <span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+        </div>
+        <p className="projects-foot"><a href="#top">Back to home ↖</a> · More experiments on <a href="https://github.com/nohov" target="_blank" rel="noreferrer">GitHub ↗</a> · <a href="mailto:me@noahhova.com">Get in touch ↗</a></p>
+      </section>}
     </main>
   </>;
 }

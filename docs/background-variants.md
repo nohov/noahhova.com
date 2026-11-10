@@ -1,15 +1,15 @@
 # Hero background candidates
 
-The current painting remains the default. Three original alternatives are available as query previews on the same hero-only page; none adds another section or figure. Each has a separately art-directed desktop and portrait image. All six new JPGs were generated with the built-in imagegen tool, then optimized to 169–253 KB per file. The JPGs live in [`src/assets/background-variants`](../src/assets/background-variants).
+Queens blue hour is now the default Home painting. The original pastoral painting, cloud ridgeline, and ink topography remain query previews. Each new direction has a separately art-directed desktop and portrait image. All six new JPGs were generated with the built-in imagegen tool, then optimized to 169–253 KB per file. The JPGs live in [`src/assets/background-variants`](../src/assets/background-variants).
 
 | Direction | Desktop preview | iPhone preview | Live preview | Rationale |
 | --- | --- | --- | --- | --- |
-| Original pastoral | [Desktop](background-previews/original-desktop.jpg) | [iPhone](background-previews/original-iphone.jpg) | [Open](http://127.0.0.1:5174/) | Existing approved painting; cinematic but little direct connection to Queens. |
+| Original pastoral | [Desktop](background-previews/original-desktop.jpg) | [iPhone](background-previews/original-iphone.jpg) | [Open](http://127.0.0.1:5174/?background=original) | Earlier painting; cinematic but little direct connection to Queens. |
 | Cloud ridgeline | [Desktop](background-previews/cloud-desktop.jpg) | [iPhone](background-previews/cloud-iphone.jpg) | [Open](http://127.0.0.1:5174/?background=cloud) | Closest to existing atmosphere, with simpler open space. A stronger shade keeps white type readable. |
-| Queens blue hour | [Desktop](background-previews/queens-desktop.jpg) | [iPhone](background-previews/queens-iphone.jpg) | [Open](http://127.0.0.1:5174/?background=queens) | The strongest link to Noah's stated background. This is interpretive original artwork, not an exact geographic depiction. |
+| Queens blue hour (default) | [Desktop](background-previews/queens-desktop.jpg) | [iPhone](background-previews/queens-iphone.jpg) | [Open](http://127.0.0.1:5174/) | The strongest link to Noah's stated background. This is interpretive original artwork, not an exact geographic depiction. |
 | Ink topography | [Desktop](background-previews/topographic-desktop.jpg) | [iPhone](background-previews/topographic-iphone.jpg) | [Open](http://127.0.0.1:5174/?background=topographic) | Quiet abstract terrain suggests mathematical curiosity without literal AI symbols. |
 
-Each preview keeps the same frame, copy, contacts, painting motion, and reduced-motion support. `npm test` verifies all image URLs resolve and all variants fit desktop and iPhone layouts with pointer/touch motion. Independent visual QA should still judge character, contrast, and whether each painting is appropriate for Noah. The local preview links work while the Vite server is running.
+Each preview keeps the same Home frame, copy, contacts, painting motion, and reduced-motion support. `npm test` verifies all image URLs resolve and all variants fit desktop and iPhone layouts with pointer/touch motion. The local preview links work while the Vite server is running.
 
 ## Independent QA
 

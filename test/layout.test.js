@@ -13,7 +13,7 @@ const viewports = [
   { width: 1440, height: 900 },
 ];
 
-test("hero-only page fits desktop and iPhone frames", async () => {
+test("Queens home fits desktop and iPhone frames", async () => {
   const server = await createServer({ server: { host: "127.0.0.1", port: 0 } });
   await server.listen();
   let browser;
@@ -36,18 +36,18 @@ test("hero-only page fits desktop and iPhone frames", async () => {
           };
           return {
             hero: rect(".hero"), frame: rect(".hero-frame"), heading: rect(".hero h1"),
-            bottom: rect(".frame-bottom"), brand: rect(".brand"), contact: rect(".contact-pill"),
+            bottom: rect(".frame-bottom"), brand: rect(".brand"), projectsLink: rect(".projects-nav"), contact: rect(".contact-pill"),
             painting: getComputedStyle(document.querySelector(".hero-landscape")).backgroundImage,
             sectionCount: document.querySelectorAll("main section").length,
-            brokenHashes: [...document.querySelectorAll('a[href^="#"]')].filter(a => !document.getElementById(a.hash.slice(1))).map(a => a.href),
+            hashes: [...document.querySelectorAll('a[href^="#"]')].map(a => a.hash),
             scrollWidth: document.documentElement.scrollWidth,
             scrollHeight: document.documentElement.scrollHeight,
-            links: [...document.querySelectorAll(".contact-pill, .hero-links a")].map(a => ({ href: a.getAttribute("href"), width: a.getBoundingClientRect().width, height: a.getBoundingClientRect().height })),
+            links: [...document.querySelectorAll(".site-nav a, .hero-links a")].filter(a => getComputedStyle(a).display !== "none").map(a => ({ href: a.getAttribute("href"), width: a.getBoundingClientRect().width, height: a.getBoundingClientRect().height })),
           };
         });
         const name = `${browserType.name()} ${viewport.width}×${viewport.height}`;
         assert.equal(result.sectionCount, 1, `${name}: more than the hero is present`);
-        assert.deepEqual(result.brokenHashes, [], `${name}: broken section links`);
+        assert.deepEqual(result.hashes, ["#top", "#projects"], `${name}: unexpected navigation targets`);
         assert.ok(result.hero.height >= viewport.height - 1, `${name}: hero does not fill viewport`);
         assert.ok(result.scrollHeight <= viewport.height + 2, `${name}: hero creates unwanted scrolling`);
         assert.ok(result.scrollWidth <= viewport.width, `${name}: horizontal overflow`);
@@ -55,11 +55,13 @@ test("hero-only page fits desktop and iPhone frames", async () => {
         assert.ok(result.heading.y >= result.frame.y && result.heading.y + result.heading.height <= result.frame.y + result.frame.height, `${name}: heading clips`);
         assert.ok(result.bottom.y >= result.heading.y + result.heading.height, `${name}: hero copy overlaps title`);
         assert.ok(result.bottom.y + result.bottom.height <= result.frame.y + result.frame.height, `${name}: hero links clip`);
-        assert.ok(result.contact.x >= result.brand.x + result.brand.width, `${name}: header overlaps`);
-        assert.ok(result.painting.includes(viewport.width <= 600 ? "renaissance-landscape-mobile" : "renaissance-landscape"), `${name}: wrong painting`);
+        assert.ok(result.projectsLink.x >= result.brand.x + result.brand.width, `${name}: header overlaps`);
+        if (viewport.width > 600) assert.ok(result.contact.x >= result.projectsLink.x + result.projectsLink.width, `${name}: header contact overlaps`);
+        assert.ok(result.painting.includes(`queens-${viewport.width <= 600 ? "mobile" : "desktop"}`), `${name}: wrong painting`);
+        assert.equal(await page.locator(".hero").getAttribute("data-background"), "queens", `${name}: Queens is not default`);
         for (const link of result.links) {
-          assert.ok(link.href && !link.href.startsWith("#"), `${name}: contact link has no destination`);
-          assert.ok(link.width >= 43 && link.height >= 43, `${name}: contact link is smaller than 44px`);
+          assert.ok(link.href, `${name}: link has no destination`);
+          assert.ok(link.width >= 43 && link.height >= 43, `${name}: link is smaller than 44px`);
         }
       }
 
@@ -103,6 +105,67 @@ test("hero-only page fits desktop and iPhone frames", async () => {
     browser = undefined;
   } finally {
     await browser?.close();
+    await server.close();
+  }
+});
+
+test("Projects opens directly and navigation works across sizes and browsers", async () => {
+  const server = await createServer({ server: { host: "127.0.0.1", port: 0 } });
+  await server.listen();
+  const { port } = server.httpServer.address();
+  try {
+    for (const browserType of [chromium, firefox, webkit]) {
+      const browser = await browserType.launch();
+      try {
+        const page = await browser.newPage();
+        const errors = [];
+        page.on("pageerror", error => errors.push(error.message));
+        for (const viewport of viewports) {
+          await page.setViewportSize(viewport);
+          await page.goto(`http://127.0.0.1:${port}/#projects`);
+          await page.locator("#projects-title").waitFor();
+          const result = await page.evaluate(() => ({
+            heading: document.querySelector("h1")?.textContent,
+            sectionCount: document.querySelectorAll("main section").length,
+            selected: document.querySelector(".projects-nav").getAttribute("aria-current"),
+            overflowX: document.documentElement.scrollWidth > innerWidth,
+            cards: [...document.querySelectorAll(".project-card")].map(card => ({
+              right: card.getBoundingClientRect().right,
+              link: card.querySelector("a")?.href,
+              linkHeight: card.querySelector("a")?.getBoundingClientRect().height,
+            })),
+          }));
+          const name = `${browserType.name()} ${viewport.width}×${viewport.height}`;
+          assert.match(result.heading, /Projects in progress/, `${name}: no Projects heading`);
+          assert.equal(result.sectionCount, 1, `${name}: wrong number of views`);
+          assert.equal(result.selected, "page", `${name}: Projects not marked current`);
+          assert.equal(result.overflowX, false, `${name}: horizontal overflow`);
+          assert.equal(result.cards.length, 2, `${name}: missing project`);
+          assert.deepEqual(result.cards.map(card => card.link), ["https://github.com/nohov/Sightcuit", "https://github.com/nohov/deep-ml"], `${name}: unexpected project destination`);
+          for (const card of result.cards) {
+            assert.ok(card.right <= viewport.width + 1, `${name}: project card clips`);
+            assert.ok(card.link?.startsWith("https://") && card.linkHeight >= 43, `${name}: project link invalid or too small`);
+          }
+        }
+        await page.getByRole("link", { name: "Noah Hova, home" }).click();
+        await page.locator(".hero").waitFor();
+        assert.equal(new URL(page.url()).hash, "#top", `${browserType.name()}: Home link failed`);
+        await page.getByRole("link", { name: /Projects/ }).click();
+        await page.locator("#projects-title").waitFor();
+        await page.goBack();
+        await page.locator(".hero").waitFor();
+        assert.equal(new URL(page.url()).hash, "#top", `${browserType.name()}: Back did not restore Home`);
+        await page.getByRole("link", { name: /Projects/ }).click();
+        await page.getByRole("link", { name: /Back to home/ }).click();
+        await page.locator(".hero").waitFor();
+        assert.equal(new URL(page.url()).hash, "#top", `${browserType.name()}: footer Home link failed`);
+        assert.deepEqual(errors, [], `${browserType.name()}: page errors`);
+        await page.close();
+      } finally {
+        await browser.close();
+      }
+    }
+  } finally {
     await server.close();
   }
 });

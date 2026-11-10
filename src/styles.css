@@ -10,6 +10,12 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
 .brand { display: flex; align-items: flex-start; gap: 12px; font-size: 16px; font-weight: 700; line-height: 1.05; text-decoration: none; }
 .brand small { display: block; margin-top: 4px; font-size: 12px; font-weight: 500; }
 .brand-mark { display: grid; place-items: center; width: 28px; height: 28px; border: 2px solid currentColor; font-family: Georgia, serif; font-size: 19px; font-style: italic; line-height: 1; transform: rotate(-12deg); }
+.site-nav { display: flex; align-items: center; gap: 24px; }
+.projects-nav { display: flex; align-items: center; gap: 7px; min-height: 44px; font-size: 14px; font-weight: 700; text-decoration: none; }
+.projects-nav span, .project-copy > a span { font-weight: 400; }
+.projects-nav[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+.projects-nav:hover, .projects-nav:focus-visible { color: #ff4cae; }
+.brand:focus-visible, .projects-nav:focus-visible, .contact-pill:focus-visible, .project-copy a:focus-visible, .projects-foot a:focus-visible { outline: 2px solid #ff4cae; outline-offset: 4px; }
 .contact-pill { display: grid; place-items: center; min-height: 44px; padding: 10px 22px; border-radius: 30px; background: white; color: #17201b; font-size: 14px; font-weight: 700; text-decoration: none; white-space: nowrap; }
 .contact-pill:hover, .contact-pill:focus-visible { background: #df31a2; color: white; }
 
@@ -39,6 +45,33 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
 .hero-links a:hover, .hero-links a:focus-visible { color: #ff4cae; }
 .hero-links a span { font-size: 18px; font-weight: 400; letter-spacing: 0; }
 
+.projects { position: relative; isolation: isolate; min-height: 100svh; padding: 142px clamp(24px, 6vw, 100px) 44px; overflow: hidden; background: #0c122a; }
+.projects::before { position: absolute; z-index: -1; inset: 0; content: ""; background: linear-gradient(180deg, rgba(9,13,31,.86), rgba(9,13,31,.95) 62%), url("./assets/background-variants/queens-desktop.jpg") center / cover; }
+.projects-intro { max-width: 900px; margin-bottom: 48px; }
+.projects-kicker { margin: 0 0 17px; color: #ffb5dc; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.projects h1 { margin: 0; font-size: clamp(48px, 6.2vw, 98px); letter-spacing: -.08em; line-height: .91; }
+.projects h1 em { color: #ffb5dc; }
+.projects-intro > p:last-child { margin: 22px 0 0; font-size: clamp(16px, 1.5vw, 21px); }
+.project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 1340px; }
+.project-card { min-width: 0; border: 1px solid rgba(255,255,255,.42); background: rgba(10,16,35,.63); }
+.project-art { position: relative; display: flex; align-items: center; justify-content: center; height: clamp(190px, 22vw, 330px); overflow: hidden; border-bottom: 1px solid rgba(255,255,255,.42); }
+.project-art::after { position: absolute; inset: 0; content: ""; opacity: .3; background: repeating-linear-gradient(90deg, transparent 0 34px, rgba(255,255,255,.28) 35px 36px), repeating-linear-gradient(0deg, transparent 0 34px, rgba(255,255,255,.28) 35px 36px); }
+.project-art-scav { background: radial-gradient(circle at 50% 50%, #7933a6, transparent 47%), linear-gradient(135deg, #241750, #6c2555); }
+.project-art-ml { background: radial-gradient(circle at 63% 44%, #45a9c4, transparent 39%), linear-gradient(135deg, #0e3152, #151b57); }
+.project-art > span, .project-art > i { position: absolute; z-index: 1; top: 20px; font-size: 14px; font-style: normal; }
+.project-art > span { left: 22px; }
+.project-art > i { right: 22px; }
+.project-art b { z-index: 1; font-size: clamp(60px, 8vw, 120px); letter-spacing: -.12em; line-height: .72; text-align: center; transform: rotate(-7deg); }
+.project-art-ml b { font-family: Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -.06em; transform: rotate(8deg); }
+.project-copy { padding: 23px 26px 25px; }
+.project-meta { display: flex; justify-content: space-between; gap: 8px; margin: 0 0 18px; color: #ffb5dc; font-size: 12px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; }
+.project-copy h2 { margin: 0 0 11px; font-size: clamp(28px, 2.5vw, 40px); letter-spacing: -.06em; line-height: 1; }
+.project-copy > p:not(.project-meta) { max-width: 48ch; min-height: 3.8em; margin: 0 0 23px; color: #dddde5; font-size: 15px; line-height: 1.4; }
+.project-copy > a { display: flex; align-items: center; justify-content: space-between; min-height: 44px; border-top: 1px solid rgba(255,255,255,.5); font-size: 15px; font-weight: 700; text-decoration: none; }
+.project-copy > a:hover { color: #ffb5dc; }
+.projects-foot { margin: 32px 0 0; color: #d4d2de; font-size: 14px; }
+.projects-foot a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 4px; }
+
 @media (max-width: 900px) {
   .hero-frame { left: 17%; width: 56%; }
   .frame-bottom { width: 70%; }
@@ -46,9 +79,10 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
 @media (max-width: 600px) {
   .site-header { padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 12px max(12px, env(safe-area-inset-left)); }
   .brand { align-items: center; min-height: 44px; gap: 8px; font-size: 13px; }
-  .brand small { font-size: 10px; }
+  .brand small { display: none; }
   .brand-mark { width: 24px; height: 24px; font-size: 17px; }
-  .contact-pill { min-height: 44px; padding: 9px 12px; font-size: 11px; }
+  .site-nav .contact-pill { display: none; }
+  .projects-nav { font-size: 13px; }
   .hero-landscape { background-image: url("./assets/renaissance-landscape-mobile.jpg"); }
   .hero[data-background="cloud"] .hero-landscape { background-image: url("./assets/background-variants/cloud-mobile.jpg"); }
   .hero[data-background="queens"] .hero-landscape { background-image: url("./assets/background-variants/queens-mobile.jpg"); }
@@ -63,6 +97,17 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
   .frame-bottom { width: 88%; }
   .frame-bottom > p { max-width: 20ch; margin-bottom: 12px; font-size: 16px; }
   .hero-links a { font-size: 18px; }
+  .projects { padding: 94px 16px 28px; }
+  .projects::before { background: linear-gradient(180deg, rgba(9,13,31,.86), rgba(9,13,31,.96) 56%), url("./assets/background-variants/queens-mobile.jpg") center / cover; }
+  .projects-intro { margin-bottom: 30px; }
+  .projects-kicker { margin-bottom: 14px; }
+  .projects h1 { font-size: clamp(43px, 11vw, 65px); }
+  .projects-intro > p:last-child { margin-top: 16px; }
+  .project-grid { grid-template-columns: 1fr; gap: 16px; }
+  .project-art { height: 180px; }
+  .project-art b { font-size: 74px; }
+  .project-copy { padding: 19px 20px 20px; }
+  .project-copy > p:not(.project-meta) { min-height: 0; }
 }
 @media (max-height: 680px) and (min-width: 601px) {
   .hero-frame { top: 15%; bottom: 8%; }
