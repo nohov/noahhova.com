@@ -16,11 +16,17 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
 .hero { --painting-x: 0px; --painting-y: 0px; position: relative; isolation: isolate; width: 100%; min-height: 100svh; overflow: hidden; background: #1a2a29; }
 .hero-landscape, .hero-shade, .hero-grain { position: absolute; inset: 0; pointer-events: none; }
 .hero-landscape { background: url("./assets/renaissance-landscape.jpg") center / cover no-repeat; animation: painting-drift 18s ease-in-out infinite; will-change: transform; }
+.hero[data-background="cloud"] .hero-landscape { background-image: url("./assets/background-variants/cloud-desktop.jpg"); }
+.hero[data-background="queens"] .hero-landscape { background-image: url("./assets/background-variants/queens-desktop.jpg"); }
+.hero[data-background="topographic"] .hero-landscape { background-image: url("./assets/background-variants/topographic-desktop.jpg"); }
 @keyframes painting-drift {
   0%, 100% { transform: translate3d(calc(var(--painting-x) - 2px), calc(var(--painting-y) - 3px), 0) scale(1.07); }
   50% { transform: translate3d(calc(var(--painting-x) + 2px), calc(var(--painting-y) + 3px), 0) scale(1.09); }
 }
 .hero-shade { background: linear-gradient(90deg, rgba(4,16,15,.45), rgba(7,19,20,.06) 58%, rgba(5,13,12,.3)), linear-gradient(0deg, rgba(5,11,10,.75), transparent 34%, rgba(3,10,9,.16)); }
+.hero[data-background="cloud"] .hero-shade { background: linear-gradient(90deg, rgba(3,18,25,.67), rgba(3,18,25,.24) 72%), linear-gradient(0deg, rgba(3,15,22,.78), transparent 48%); }
+.hero[data-background="queens"] .hero-shade { background: linear-gradient(90deg, rgba(4,8,27,.35), transparent 70%), linear-gradient(0deg, rgba(4,8,27,.72), transparent 50%); }
+.hero[data-background="topographic"] .hero-shade { background: linear-gradient(0deg, rgba(2,7,17,.72), rgba(2,7,17,.5) 35%, transparent 60%); }
 .hero-grain { z-index: 2; opacity: .16; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E"); mix-blend-mode: soft-light; }
 .hero-frame { position: absolute; z-index: 1; top: 16%; bottom: 11%; left: 28%; display: flex; flex-direction: column; width: min(43%, 690px); padding: clamp(20px, 2.4vw, 38px); border: 1px solid rgba(255,255,255,.66); color: white; }
 .frame-label { margin: 0 0 16px; font-size: clamp(11px, .95vw, 15px); font-weight: 700; letter-spacing: .03em; text-transform: uppercase; }
@@ -44,7 +50,13 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
   .brand-mark { width: 24px; height: 24px; font-size: 17px; }
   .contact-pill { min-height: 44px; padding: 9px 12px; font-size: 11px; }
   .hero-landscape { background-image: url("./assets/renaissance-landscape-mobile.jpg"); }
+  .hero[data-background="cloud"] .hero-landscape { background-image: url("./assets/background-variants/cloud-mobile.jpg"); }
+  .hero[data-background="queens"] .hero-landscape { background-image: url("./assets/background-variants/queens-mobile.jpg"); }
+  .hero[data-background="topographic"] .hero-landscape { background-image: url("./assets/background-variants/topographic-mobile.jpg"); }
   .hero-shade { background: linear-gradient(0deg, rgba(5,11,10,.85), transparent 46%, rgba(4,10,10,.36)), linear-gradient(90deg, rgba(3,12,12,.15), rgba(4,10,10,.1)); }
+  .hero[data-background="cloud"] .hero-shade { background: linear-gradient(0deg, rgba(3,14,21,.87), transparent 55%, rgba(3,14,21,.54)), linear-gradient(90deg, rgba(3,14,21,.4), rgba(3,14,21,.18)); }
+  .hero[data-background="queens"] .hero-shade { background: linear-gradient(0deg, rgba(4,8,27,.72), transparent 55%), linear-gradient(90deg, rgba(4,8,27,.22), transparent); }
+  .hero[data-background="topographic"] .hero-shade { background: linear-gradient(0deg, rgba(2,7,17,.47), transparent 55%); }
   .hero-frame { top: 13%; bottom: 8%; left: 7%; width: 74%; padding: 16px; }
   .frame-label { margin-bottom: 12px; font-size: 10px; }
   .hero h1 { font-size: clamp(49px,13vw,72px); }

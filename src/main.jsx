@@ -2,6 +2,9 @@ import { createRoot } from "react-dom/client";
 import { useLayoutEffect, useRef } from "react";
 import "./styles.css";
 
+const requestedBackground = new URLSearchParams(location.search).get("background");
+const background = ["cloud", "queens", "topographic"].includes(requestedBackground) ? requestedBackground : "original";
+
 function App() {
   const heroRef = useRef(null);
 
@@ -44,7 +47,7 @@ function App() {
     </header>
 
     <main>
-      <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title">
+      <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title" data-background={background}>
         <div className="hero-landscape" aria-hidden="true" />
         <div className="hero-shade" aria-hidden="true" />
         <div className="hero-grain" aria-hidden="true" />
