@@ -1,8 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { useEffect, useRef, useState } from "react";
 import "./styles.css";
-import Statue from "./Statue";
-import allegoryUrl from "./assets/allegory-figure.webp";
 
 const email = "me@noahhova.com";
 
@@ -40,6 +38,8 @@ function App() {
   useEffect(() => {
     const hero = heroRef.current;
     const sequence = sequenceRef.current;
+    const frameContent = hero.querySelector(".hero-frame");
+    const scrollCue = hero.querySelector(".scroll-prompt");
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
     let pointerX = 0;
     let pointerY = 0;
@@ -53,6 +53,8 @@ function App() {
       hero.style.setProperty("--painting-x", `${(-pointerX * 1.1 - progress * (mobile ? 14 : 38)).toFixed(1)}px`);
       hero.style.setProperty("--painting-y", `${(-pointerY * .9 - progress * (mobile ? 40 : 86)).toFixed(1)}px`);
       hero.style.setProperty("--painting-scale", (1 + progress * (mobile ? .07 : .14)).toFixed(3));
+      frameContent.inert = progress >= .63;
+      scrollCue.inert = progress >= .77;
       hero.dataset.progress = progress.toFixed(3);
       for (const section of document.querySelectorAll("main section")) {
         if (section.getBoundingClientRect().top <= innerHeight * .5) document.body.dataset.activeSection = section.id;
@@ -67,8 +69,6 @@ function App() {
       if (reducedMotion.matches) return;
       pointerX = (event.clientX / innerWidth - .5) * 22;
       pointerY = (event.clientY / innerHeight - .5) * 14;
-      hero.style.setProperty("--pointer-x", `${pointerX.toFixed(1)}px`);
-      hero.style.setProperty("--pointer-y", `${pointerY.toFixed(1)}px`);
       schedule();
     };
     update();
@@ -125,8 +125,6 @@ function App() {
             </nav>
           </div>
         </div>
-        <img className="hero-allegory" src={allegoryUrl} alt="" aria-hidden="true" width="1536" height="1024" />
-        <figure className="hero-statue"><Statue /></figure>
         <span className="hero-issue" aria-hidden="true">NO. 001 / 2026</span>
         <a className="scroll-prompt" href="#about">Scroll to explore <span aria-hidden="true">↓</span></a>
       </section>
