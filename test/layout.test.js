@@ -47,7 +47,7 @@ test("editorial landing page meets layout and interaction targets", async () => 
           for (let i = 3; i < pixels.length; i += 4) if (pixels[i]) { painted = true; break; }
           return {
             hero: rect(".hero"), frame: rect(".hero-frame"), heading: rect(".hero h1"), statue: rect(".hero-statue"),
-            frameBottom: rect(".frame-bottom"), brand: rect(".brand"), actions: rect(".header-actions"),
+            frameBottom: rect(".frame-bottom"), prompt: rect(".scroll-prompt"), brand: rect(".brand"), actions: rect(".header-actions"),
             landscape: getComputedStyle(document.querySelector(".hero-landscape")).backgroundImage,
             statueTransform: getComputedStyle(document.querySelector(".hero-statue")).transform,
             painted, scrollWidth: document.documentElement.scrollWidth,
@@ -62,16 +62,58 @@ test("editorial landing page meets layout and interaction targets", async () => 
         assert.ok(result.actions.x + result.actions.width <= viewport.width, `${name}: header clips`);
         assert.ok(result.scrollWidth <= viewport.width, `${name}: horizontal overflow`);
         assert.ok(result.landscape.includes("renaissance-landscape"), `${name}: landscape missing`);
+        if (viewport.width <= 600) assert.ok(result.landscape.includes("renaissance-landscape-mobile"), `${name}: portrait painting missing`);
         assert.ok(result.painted, `${name}: statue canvas is empty`);
         assert.notEqual(result.statueTransform, "none", `${name}: visual response is inactive`);
-        if (viewport.width <= 600) assert.ok(result.statue.y + result.statue.height < result.frameBottom.y, `${name}: statue covers the hero copy`);
+        if (viewport.width <= 600) {
+          assert.ok(result.statue.y >= result.heading.y + result.heading.height, `${name}: statue starts at ${result.statue.y}, heading ends at ${result.heading.y + result.heading.height}`);
+          assert.ok(result.statue.y + result.statue.height < result.frameBottom.y, `${name}: statue covers the hero copy`);
+          assert.ok(result.prompt.y >= 0 && result.prompt.y + result.prompt.height <= viewport.height, `${name}: scroll prompt is below the first screen`);
+        }
       }
 
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.locator(".hero-allegory").waitFor({ state: "visible" });
+      await page.waitForFunction(() => document.querySelector(".hero-allegory").naturalWidth > 0);
+      await page.mouse.move(100, 200);
+      const allegoryBefore = await page.locator(".hero-allegory").evaluate((element) => getComputedStyle(element).transform);
+      const statueBefore = await page.locator(".hero-statue").evaluate((element) => getComputedStyle(element).transform);
+      await page.mouse.move(1350, 700);
+      await page.waitForFunction((before) => getComputedStyle(document.querySelector(".hero-allegory")).transform !== before, allegoryBefore);
+      const allegoryAfter = await page.locator(".hero-allegory").evaluate((element) => getComputedStyle(element).transform);
+      const statueAfter = await page.locator(".hero-statue").evaluate((element) => getComputedStyle(element).transform);
+      assert.notEqual(statueAfter, statueBefore, `${browserType.name()}: cobalt figure does not respond to pointer`);
+      const pointerDirections = await page.evaluate(([a, b, c, d]) => ({
+        left: new DOMMatrixReadOnly(b).m41 - new DOMMatrixReadOnly(a).m41,
+        right: new DOMMatrixReadOnly(d).m41 - new DOMMatrixReadOnly(c).m41,
+      }), [allegoryBefore, allegoryAfter, statueBefore, statueAfter]);
+      assert.ok(pointerDirections.left > 8 && pointerDirections.right > 12, `${browserType.name()}: both figures need perceptible independent pointer motion (${JSON.stringify(pointerDirections)})`);
+      await page.evaluate(() => scrollTo({ top: (document.querySelector(".hero-sequence").offsetHeight - innerHeight) * .55, behavior: "instant" }));
+      await page.waitForFunction(() => Number(document.querySelector(".hero").dataset.progress) >= .5);
+      const scrollDirections = await page.evaluate(() => ({
+        left: new DOMMatrixReadOnly(getComputedStyle(document.querySelector(".hero-allegory")).transform).m41,
+        right: new DOMMatrixReadOnly(getComputedStyle(document.querySelector(".hero-statue")).transform).m41,
+      }));
+      assert.ok(scrollDirections.left > pointerDirections.left + 50 && scrollDirections.right < pointerDirections.right - 35, `${browserType.name()}: figures do not converge independently on scroll (${JSON.stringify(scrollDirections)})`);
+      await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+      await page.waitForFunction(() => document.querySelector(".hero").dataset.progress === "0.000");
       await page.setViewportSize({ width: 390, height: 844 });
+      await page.mouse.move(20, 200);
+      const tapTargets = await page.evaluate(() => [...document.querySelectorAll(".brand, .contact-pill, .menu-trigger, .hero-index a, .scroll-prompt, .chapter-next, .copy-email, .email-link, .social-links a, .back-to-top")].map((element) => ({ name: element.className || element.textContent.trim(), height: element.getBoundingClientRect().height, width: element.getBoundingClientRect().width })));
+      for (const target of tapTargets) assert.ok(target.height >= 43 && target.width >= 43, `${browserType.name()}: ${target.name} is smaller than a 44px tap target (${target.width}×${target.height})`);
       const beforeMove = await page.locator(".hero-statue").evaluate((element) => getComputedStyle(element).transform);
+      const beforeLandscapeMove = await page.locator(".hero-landscape").evaluate((element) => getComputedStyle(element).transform);
       await page.mouse.move(350, 300);
+      await page.waitForFunction((before) => getComputedStyle(document.querySelector(".hero-landscape")).transform !== before, beforeLandscapeMove);
       const afterMove = await page.locator(".hero-statue").evaluate((element) => getComputedStyle(element).transform);
+      const afterLandscapeMove = await page.locator(".hero-landscape").evaluate((element) => getComputedStyle(element).transform);
       assert.notEqual(afterMove, beforeMove, `${browserType.name()}: pointer parallax does not respond`);
+      assert.notEqual(afterLandscapeMove, beforeLandscapeMove, `${browserType.name()}: painting pointer parallax does not respond`);
+      const pointerTravel = await page.evaluate(([before, after]) => {
+        const a = new DOMMatrixReadOnly(before); const b = new DOMMatrixReadOnly(after);
+        return Math.hypot(a.m41 - b.m41, a.m42 - b.m42);
+      }, [beforeLandscapeMove, afterLandscapeMove]);
+      assert.ok(pointerTravel >= 8, `${browserType.name()}: painting pointer motion is imperceptible (${pointerTravel}px)`);
       await page.getByRole("button", { name: "Open menu" }).click();
       assert.equal(await page.locator("dialog").evaluate((dialog) => dialog.open), true);
       assert.equal(await page.getByRole("button", { name: "Open menu" }).getAttribute("aria-expanded"), "true");
@@ -86,9 +128,28 @@ test("editorial landing page meets layout and interaction targets", async () => 
       await page.waitForFunction(() => document.body.dataset.activeSection === "top");
       await page.evaluate(() => scrollTo({ top: document.querySelector(".hero").offsetHeight * .6, behavior: "instant" }));
       await page.waitForFunction(() => Number(document.querySelector(".hero").dataset.progress) >= .55);
+      const afterLandscapeScroll = await page.locator(".hero-landscape").evaluate((element) => getComputedStyle(element).transform);
+      assert.notEqual(afterLandscapeScroll, afterLandscapeMove, `${browserType.name()}: painting does not respond to scroll`);
+      const scrollTravel = await page.evaluate(([before, after]) => {
+        const a = new DOMMatrixReadOnly(before); const b = new DOMMatrixReadOnly(after);
+        return { distance: Math.hypot(a.m41 - b.m41, a.m42 - b.m42), scale: b.m11 };
+      }, [afterLandscapeMove, afterLandscapeScroll]);
+      assert.ok(scrollTravel.distance >= 30 && scrollTravel.scale >= 1.05, `${browserType.name()}: painting scroll motion is too subtle (${JSON.stringify(scrollTravel)})`);
+      const transition = await page.evaluate(() => ({
+        exit: Number(getComputedStyle(document.querySelector(".hero-exit")).opacity),
+        statue: Number(getComputedStyle(document.querySelector(".hero-statue")).opacity),
+        prompt: Number(getComputedStyle(document.querySelector(".scroll-prompt")).opacity),
+        headerTone: document.body.dataset.headerTone,
+      }));
+      assert.ok(transition.exit >= .95 && transition.statue <= .05 && transition.prompt <= .05 && transition.headerTone === "dark", `${browserType.name()}: hero does not fade into About with a legible header (${JSON.stringify(transition)})`);
       await page.locator("#contact").scrollIntoViewIfNeeded();
       await page.getByRole("button", { name: "Copy email" }).click();
       await page.getByRole("button", { name: "Copied to clipboard" }).waitFor();
+      await page.evaluate(() => scrollTo({ top: document.getElementById("now").offsetTop - innerHeight * .5, behavior: "instant" }));
+      await page.waitForFunction(() => document.body.dataset.activeSection === "now");
+      assert.equal(await page.evaluate(() => document.body.dataset.headerTone), "dark", `${browserType.name()}: header changes before About leaves the header area`);
+      await page.evaluate(() => scrollTo({ top: document.getElementById("now").offsetTop - 40, behavior: "instant" }));
+      await page.waitForFunction(() => document.body.dataset.headerTone === "light");
       assert.deepEqual(errors, [], `${browserType.name()}: browser errors`);
 
       const reducedPage = await browser.newPage({ reducedMotion: "reduce" });
@@ -98,8 +159,9 @@ test("editorial landing page meets layout and interaction targets", async () => 
         scroll: getComputedStyle(document.documentElement).scrollBehavior,
         landscape: getComputedStyle(document.querySelector(".hero-landscape")).transform,
         statue: getComputedStyle(document.querySelector(".hero-statue")).transform,
+        allegory: getComputedStyle(document.querySelector(".hero-allegory")).transform,
       }));
-      assert.deepEqual(reduced, { scroll: "auto", landscape: "none", statue: "none" }, `${browserType.name()}: reduced motion is not honored`);
+      assert.deepEqual(reduced, { scroll: "auto", landscape: "none", statue: "none", allegory: "none" }, `${browserType.name()}: reduced motion is not honored`);
       await reducedPage.close();
       await page.close();
       await browser.close();

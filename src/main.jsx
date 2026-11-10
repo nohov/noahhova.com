@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import { useEffect, useRef, useState } from "react";
 import "./styles.css";
 import Statue from "./Statue";
+import allegoryUrl from "./assets/allegory-figure.webp";
 
 const email = "me@noahhova.com";
 
@@ -32,27 +33,43 @@ function CopyEmail() {
 
 function App() {
   const heroRef = useRef(null);
+  const sequenceRef = useRef(null);
   const menuRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const hero = heroRef.current;
+    const sequence = sequenceRef.current;
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    let pointerX = 0;
+    let pointerY = 0;
     let frame = 0;
     const update = () => {
       frame = 0;
-      const progress = Math.min(1, Math.max(0, scrollY / hero.offsetHeight));
+      const travel = Math.max(1, sequence.offsetHeight - innerHeight);
+      const progress = Math.min(1, Math.max(0, (scrollY - sequence.offsetTop) / travel));
+      const mobile = innerWidth <= 600;
       hero.style.setProperty("--hero-progress", progress.toFixed(3));
+      hero.style.setProperty("--painting-x", `${(-pointerX * 1.1 - progress * (mobile ? 14 : 38)).toFixed(1)}px`);
+      hero.style.setProperty("--painting-y", `${(-pointerY * .9 - progress * (mobile ? 40 : 86)).toFixed(1)}px`);
+      hero.style.setProperty("--painting-scale", (1 + progress * (mobile ? .07 : .14)).toFixed(3));
       hero.dataset.progress = progress.toFixed(3);
-      for (const section of document.querySelectorAll("main > section")) {
+      for (const section of document.querySelectorAll("main section")) {
         if (section.getBoundingClientRect().top <= innerHeight * .5) document.body.dataset.activeSection = section.id;
       }
+      const active = document.body.dataset.activeSection;
+      const aboutBounds = document.getElementById("about").getBoundingClientRect();
+      const headerOverAbout = aboutBounds.top <= 50 && aboutBounds.bottom > 50;
+      document.body.dataset.headerTone = headerOverAbout || (active === "top" && progress >= .82) ? "dark" : "light";
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
     const move = (event) => {
       if (reducedMotion.matches) return;
-      hero.style.setProperty("--pointer-x", `${((event.clientX / innerWidth - .5) * 22).toFixed(1)}px`);
-      hero.style.setProperty("--pointer-y", `${((event.clientY / innerHeight - .5) * 14).toFixed(1)}px`);
+      pointerX = (event.clientX / innerWidth - .5) * 22;
+      pointerY = (event.clientY / innerHeight - .5) * 14;
+      hero.style.setProperty("--pointer-x", `${pointerX.toFixed(1)}px`);
+      hero.style.setProperty("--pointer-y", `${pointerY.toFixed(1)}px`);
+      schedule();
     };
     update();
     addEventListener("scroll", schedule, { passive: true });
@@ -85,6 +102,7 @@ function App() {
   }
 
   return <>
+    <a className="skip-link" href="#about">Skip to content</a>
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Noah Hova, back to top"><span className="brand-mark" aria-hidden="true">N</span><span>Noah Hova <small>Notes from the internet</small></span></a>
       <div className="header-actions">
@@ -94,8 +112,9 @@ function App() {
     </header>
 
     <main>
+      <div className="hero-sequence" ref={sequenceRef}>
       <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title" data-progress="0.000">
-        <div className="hero-landscape" aria-hidden="true" /><div className="hero-shade" aria-hidden="true" /><div className="hero-grain" aria-hidden="true" />
+        <div className="hero-landscape" aria-hidden="true" /><div className="hero-shade" aria-hidden="true" /><div className="hero-grain" aria-hidden="true" /><div className="hero-exit" aria-hidden="true" />
         <div className="hero-frame">
           <p className="frame-label">An internet native from Queens</p>
           <h1 id="hero-title">Ideas<br />in <em>motion.</em></h1>
@@ -106,10 +125,12 @@ function App() {
             </nav>
           </div>
         </div>
+        <img className="hero-allegory" src={allegoryUrl} alt="" aria-hidden="true" width="1536" height="1024" />
         <figure className="hero-statue"><Statue /></figure>
         <span className="hero-issue" aria-hidden="true">NO. 001 / 2026</span>
         <a className="scroll-prompt" href="#about">Scroll to explore <span aria-hidden="true">↓</span></a>
       </section>
+      </div>
 
       <section className="chapter chapter-about" id="about" aria-labelledby="about-title">
         <div className="chapter-topline"><span>01 / About</span><span>Noah Hova</span></div>
