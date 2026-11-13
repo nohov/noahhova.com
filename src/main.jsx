@@ -63,8 +63,7 @@ function App() {
         <div className="hero-shade" aria-hidden="true" />
         <div className="hero-grain" aria-hidden="true" />
         <div className="hero-frame">
-          <p className="frame-label">An internet native from Queens</p>
-          <h1 id="hero-title">Ideas<br />in <em>motion.</em></h1>
+          <h1 id="hero-title">Noah<br /> <em>Hova</em></h1>
           <div className="frame-bottom">
             <p>Math, AI, and a lifelong curiosity about what comes next.</p>
             <nav className="hero-links" aria-label="Connect with Noah">

@@ -26,6 +26,9 @@ test("Queens home fits desktop and iPhone frames", async () => {
       page.on("pageerror", error => errors.push(error.message));
       await page.goto(`http://127.0.0.1:${port}/`);
       await page.locator(".hero-frame").waitFor();
+      assert.equal(await page.title(), "Noah Hova", `${browserType.name()}: old page title remains`);
+      assert.equal(await page.locator("#hero-title").innerText(), "Noah\nHova", `${browserType.name()}: wrong hero title`);
+      assert.equal(await page.getByText(/Ideas in motion|An internet native from Queens/i).count(), 0, `${browserType.name()}: old hero copy remains`);
 
       for (const viewport of viewports) {
         await page.setViewportSize(viewport);
