@@ -1,0 +1,16 @@
+# Noah Hova
+
+Noah Hova is interested in mathematics, artificial intelligence, and personal projects. This is a public, human-readable summary for AI search tools; it is not a vector search or chat endpoint.
+
+## Canonical profile
+
+- AI-readable page: https://noahhova.com/ai.html
+- Public code: https://github.com/nohov
+- Contact: mailto:me@noahhova.com
+
+## Public projects
+
+- ScavScrap: an in-progress glasses-to-PC electronics guide. The glasses-to-laptop relay and an earlier recognition experiment are built; the guided lesson is planned. Source: https://github.com/nohov/Sightcuit/blob/main/README.md
+- Deep-ML: hand-written machine learning and math practice solutions. Source: https://github.com/nohov/deep-ml/blob/main/README.md
+
+For current project status, use the linked repository READMEs rather than inferring completion from this summary.

@@ -1,15 +1,17 @@
-# Hero background candidates
+# Archived hero background candidates
 
-Queens blue hour is now the default Home painting. The original pastoral painting, cloud ridgeline, and ink topography remain query previews. Each new direction has a separately art-directed desktop and portrait image. All six new JPGs were generated with the built-in imagegen tool, then optimized to 169–253 KB per file. The JPGs live in [`src/assets/background-variants`](../src/assets/background-variants).
+These assets document an earlier direction. The current white site does not load them or offer background query previews.
 
-| Direction | Desktop preview | iPhone preview | Live preview | Rationale |
-| --- | --- | --- | --- | --- |
-| Original pastoral | [Desktop](background-previews/original-desktop.jpg) | [iPhone](background-previews/original-iphone.jpg) | [Open](http://127.0.0.1:5174/?background=original) | Earlier painting; cinematic but little direct connection to Queens. |
-| Cloud ridgeline | [Desktop](background-previews/cloud-desktop.jpg) | [iPhone](background-previews/cloud-iphone.jpg) | [Open](http://127.0.0.1:5174/?background=cloud) | Closest to existing atmosphere, with simpler open space. A stronger shade keeps white type readable. |
-| Queens blue hour (default) | [Desktop](background-previews/queens-desktop.jpg) | [iPhone](background-previews/queens-iphone.jpg) | [Open](http://127.0.0.1:5174/) | The strongest link to Noah's stated background. This is interpretive original artwork, not an exact geographic depiction. |
-| Ink topography | [Desktop](background-previews/topographic-desktop.jpg) | [iPhone](background-previews/topographic-iphone.jpg) | [Open](http://127.0.0.1:5174/?background=topographic) | Quiet abstract terrain suggests mathematical curiosity without literal AI symbols. |
+Queens blue hour was the default Home painting in the earlier version. The original pastoral painting, cloud ridgeline, and ink topography were query previews. Each new direction has a separately art-directed desktop and portrait image. All six new JPGs were generated with the built-in imagegen tool, then optimized to 169–253 KB per file. The JPGs live in [`src/assets/background-variants`](../src/assets/background-variants).
 
-Each preview keeps the same Home frame, copy, contacts, painting motion, and reduced-motion support. `npm test` verifies all image URLs resolve and all variants fit desktop and iPhone layouts with pointer/touch motion. The local preview links work while the Vite server is running.
+| Direction | Desktop preview | iPhone preview | Rationale |
+| --- | --- | --- | --- |
+| Original pastoral | [Desktop](background-previews/original-desktop.jpg) | [iPhone](background-previews/original-iphone.jpg) | Earlier painting; cinematic but little direct connection to Queens. |
+| Cloud ridgeline | [Desktop](background-previews/cloud-desktop.jpg) | [iPhone](background-previews/cloud-iphone.jpg) | Closest to the earlier atmosphere, with simpler open space. |
+| Queens blue hour | [Desktop](background-previews/queens-desktop.jpg) | [iPhone](background-previews/queens-iphone.jpg) | Interpretive original artwork, not an exact geographic depiction. |
+| Ink topography | [Desktop](background-previews/topographic-desktop.jpg) | [iPhone](background-previews/topographic-iphone.jpg) | Quiet abstract terrain suggested mathematical curiosity. |
+
+The following QA notes describe the archived painting implementation. Current tests cover the white design in [recreation-acceptance.md](recreation-acceptance.md).
 
 ## Independent QA
 

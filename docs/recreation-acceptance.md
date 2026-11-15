@@ -1,36 +1,25 @@
-# Home and Projects acceptance
+# White site acceptance
 
-The current branch presents a viewport-filling Home hero with Queens blue hour as the default painting and a separate Projects view at `/#projects`. Home has a framed headline, short introduction, and direct email/GitHub links. Projects presents two verified public projects: ScavScrap is in progress, and Deep-ML is a collection of hand-written practice solutions. The site has no statue, allegorical figure, or installable app. Home painting motion is pointer and touch driven, with a subtle idle drift.
+The current branch presents a white, type-led Home, a Projects view, a Human view with a clearly marked portrait placeholder, and a standalone AI-readable profile at `/ai.html`. Home places Human and AI choices near its bottom. The AI page uses semantic HTML and JSON-LD, and `/llms.txt` offers a plain-text summary. These are structured public facts, not vector embeddings or a chat endpoint. Noah will provide the portrait later.
 
-Project copy is based on the public [ScavScrap README](https://github.com/nohov/Sightcuit/blob/main/README.md) and [Deep-ML README](https://github.com/nohov/deep-ml/blob/main/README.md). ScavScrap's repository name is still `Sightcuit`; its README names the current project ScavScrap and separates working prototypes from the planned guided lesson.
+Project descriptions are based on the public [ScavScrap README](https://github.com/nohov/Sightcuit/blob/main/README.md) and [Deep-ML README](https://github.com/nohov/deep-ml/blob/main/README.md). The ScavScrap guide remains in progress; its relay and early recognition experiment exist today.
 
-Run `npm ci`, `npm run test:setup`, then `npm test`. The test command builds the production site and checks Chromium, Firefox, and WebKit at 320×568, 375×667, 390×844, 430×932, 440×956, 768×1024, and 1440×900. It checks one visible section per view, no horizontal overflow, visible hero text/links, 44px links, Queens as the default painting, all background query previews, pointer motion of at least 8px, iPhone touch response, reduced motion, direct Projects loading, Home/Back navigation, and browser errors.
+Run `npm test`. It builds the production site and checks Chromium, Firefox, and WebKit at 320×568, 375×667, 390×844, 430×932, 440×956, 768×1024, and 1440×900. Checks cover white surfaces, no painting/image request, one visible Home view, no Home scroll or horizontal overflow, 44px links, Human and Projects deep links, browser Back, and an AI profile readable without JavaScript. An independent reviewer also inspects screenshots, keyboard focus, link destinations, and page errors. Review scores are judgments about this scope, not proof of resemblance to Ramp or Slow Ventures.
 
-An independent QA agent must also inspect desktop and iPhone-sized screenshots and report evidence for composition, painting motion, iPhone layout, interaction, accessibility/performance, and project credibility. Automated tests and subjective scores do not establish pixel or 3D parity with Shopify Editions.
+## Physical phone check
 
-## Home and Projects independent QA, November 10, 2026
+Use Tailscale Serve for a private iPhone preview when Noah's phone and the Tailscale CLI are available. Check Home, Human, Projects, and AI views, including touch targets and contact links. Do not use Funnel without a request for a public preview. Record when a physical phone check was unavailable.
 
-`npm test` passed 3/3 after review fixes. Chromium and WebKit screenshots at desktop, 320×568, 390×844, and 440×956 showed no clipping or horizontal overflow. QA verified direct Projects loading, Home, footer return, browser Back, visible focus in Chromium, 44px phone links, and HTTP 200 for both project repositories and the GitHub profile. A README-linked Deep-ML portfolio URL returned 404, so the site links to the live repository instead. The ScavScrap card describes its working prototype and planned lesson separately.
+## Independent QA, November 15, 2026
+
+The production build and three browser tests pass. Independent QA inspected Home at 320×568 through 1440×900 and the other views at phone and desktop widths. It found no clipping, horizontal overflow, painting requests, or page errors. All checked links meet the 44px phone target; small label contrast is at least 4.91:1. The AI page and `/llms.txt` respond without JavaScript. Home, Human, Projects, AI, and Back navigation work.
 
 | Term | Score / 10 |
 | --- | ---: |
-| Composition | 9.6 |
-| Painting motion | 9.6 |
+| Composition | 9.5 |
 | iPhone layout | 9.5 |
-| Interaction and links | 9.5 |
+| Interaction | 9.5 |
 | Accessibility and performance | 9.5 |
 | Project credibility | 9.5 |
 
-These scores are independent visual judgments for this scope, not proof of Shopify parity or a physical-device assistive-technology audit.
-
-## Earlier hero-only QA, November 10, 2026
-
-| Term | Score / 10 |
-| --- | ---: |
-| Composition | 9.6 |
-| Painting motion | 9.7 |
-| iPhone layout | 9.6 |
-| Interaction and links | 9.6 |
-| Accessibility and performance | 9.5 |
-
-The QA agent ran the build and Chromium/Firefox/WebKit suite, inspected screenshots at all listed sizes, and confirmed no clipping, overlap, or unwanted scrolling. Painting movement measured 19.4px across desktop pointer positions and 15.2px across WebKit iPhone taps. Reduced motion disabled animation and transform; keyboard focus reached every link. `mailto:` links were checked as intents, not as delivered email. This is not a physical-device assistive-technology audit.
+The physical iPhone check was unavailable: Tailscale showed the iOS device offline. Browser viewport tests are not a substitute for that check.
