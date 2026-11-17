@@ -20,12 +20,15 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
           await page.setViewportSize(size);
           await page.goto(base);
           await page.locator(".portrait").waitFor();
+          await page.locator(".portrait").evaluate(img => img.decode());
           const home = await page.evaluate(() => ({
             sectionCount: document.querySelectorAll("main section").length,
             width: document.documentElement.scrollWidth,
             portrait: document.querySelector(".portrait").getBoundingClientRect().toJSON(),
+            image: { width: document.querySelector(".portrait").naturalWidth, height: document.querySelector(".portrait").naturalHeight, alt: document.querySelector(".portrait").alt, source: document.querySelector(".portrait").currentSrc },
             bioTextLeft: (() => { const bio = document.querySelector(".bio"); const range = document.createRange(); range.setStart(bio.firstChild, 0); range.setEnd(bio.firstChild, 1); return range.getBoundingClientRect().left; })(),
             links: [...document.querySelectorAll(".site-links a")].map(a => ({ href: a.getAttribute("href"), rect: a.getBoundingClientRect().toJSON() })),
+            email: document.querySelector(".site-links button").getBoundingClientRect().toJSON(),
             hasHeader: Boolean(document.querySelector("header")),
             reveal: getComputedStyle(document.querySelector(".bio")).backgroundImage,
           }));
@@ -34,16 +37,33 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
           assert.equal(home.hasHeader, false);
           assert.ok(home.width <= size.width, `${label}: horizontal overflow`);
           assert.ok(home.portrait.width <= size.width, `${label}: portrait clips`);
+          assert.equal(home.image.width, 1080);
+          assert.equal(home.image.height, 1512);
+          assert.equal(home.image.alt, "Cobalt halftone sculpture with a raised hand");
+          if (type === chromium) assert.match(home.image.source, /\.avif(?:\?|$)/, "modern browser did not use smaller image");
           assert.ok(Math.abs(home.portrait.width / home.portrait.height - 5 / 7) < .01, `${label}: portrait proportions`);
           assert.ok(Math.abs(home.bioTextLeft - home.portrait.left) < 1, `${label}: blurb alignment`);
           assert.equal(home.reveal, "none", `${label}: artwork visible by default`);
-          assert.equal(home.links.length, 4);
+          assert.equal(home.links.length, 3);
           for (const link of home.links) assert.ok(link.href && link.rect.width >= 43 && link.rect.height >= 43, `${label}: small or dead link`);
+          assert.ok(home.email.width >= 43 && home.email.height >= 43, `${label}: small Email button`);
           await page.goto(base + "#projects");
           await page.locator("#projects-title").waitFor();
           assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
         }
+        await page.getByRole("button", { name: "Email" }).click();
+        await page.waitForFunction(() => document.querySelector(".site-links button").textContent !== "Email");
+        assert.equal(await page.locator(".site-links button").textContent(), "Copied", `${type.name()} Projects clipboard`);
+        if (type === chromium) {
+          await page.context().grantPermissions(["clipboard-read"]);
+          assert.equal(await page.evaluate(() => navigator.clipboard.readText()), "me@noahhova.com");
+        }
+        assert.match(page.url(), /#projects$/, "Email opened another destination");
         await page.getByRole("link", { name: "Home" }).click();
+        await page.getByRole("button", { name: "Email" }).focus();
+        await page.keyboard.press("Enter");
+        await page.waitForFunction(() => document.querySelector(".site-links button").textContent !== "Email");
+        assert.equal(await page.locator(".site-links button").textContent(), "Copied", `${type.name()} Home clipboard`);
         await page.locator(".bio").waitFor();
         await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
         await page.waitForFunction(() => document.querySelector(".bio").classList.contains("is-revealed"));

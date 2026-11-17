@@ -1,10 +1,10 @@
 # White site acceptance
 
-The current branch presents a narrow Home with a large portrait slot, compact links, and one blurb, plus Projects and a standalone AI-readable profile at `/ai.html`. The dithered Noah portrait is still in Figma on his MacBook; the slot is explicitly marked until he exports it. Selecting blurb text temporarily reveals the Queens blue-hour painting behind the paragraph. The AI page uses semantic HTML and JSON-LD, and `/llms.txt` offers a plain-text summary.
+The current branch presents a narrow Home with Noah's approved cobalt engraving from GitHub, compact links, and one blurb, plus Projects and a standalone AI-readable profile at `/ai.html`. The image is a dithered sculpture, not a personal portrait. Browsers that support AVIF receive a 248 KB version; the original PNG remains the fallback. Selecting blurb text temporarily reveals the Queens blue-hour painting behind the paragraph. The AI page uses semantic HTML and JSON-LD, and `/llms.txt` offers a plain-text summary.
 
 Project descriptions are based on the public [ScavScrap README](https://github.com/nohov/Sightcuit/blob/main/README.md) and [Deep-ML README](https://github.com/nohov/deep-ml/blob/main/README.md). The ScavScrap guide remains in progress; its relay and early recognition experiment exist today.
 
-Run `npm test`. It builds the production site and checks Chromium, Firefox, and WebKit at phone and desktop widths. Checks cover the white default, one visible Home view, no horizontal overflow, 44px links, Projects navigation, artwork appearing only during blurb selection, and an AI profile readable without JavaScript. An independent reviewer also inspects screenshots, keyboard/touch selection, link destinations, and page errors. The portrait and physical iPhone selection behavior remain to be verified after the asset is available.
+Run `npm test`. It builds the production site and checks Chromium, Firefox, and WebKit at phone and desktop widths. Checks cover the white default, the full 1080×1512 image, one visible Home view, no horizontal overflow, 44px controls, Projects navigation, Email copying with visible feedback, artwork appearing only during blurb selection, and an AI profile readable without JavaScript. An independent reviewer also inspects screenshots, keyboard/touch selection, link destinations, and page errors. Physical iPhone selection behavior remains to be verified when the phone is available.
 
 ## Physical phone check
 
