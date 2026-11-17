@@ -4,7 +4,7 @@ Challenge assumptions and report evidence plainly. A design score is a judgment,
 
 ## Current scope
 
-Build a narrow, portrait-first white Home with no header, decorative cards, or dividers: the approved 5:7 cobalt engraving from GitHub, compact links, a short personal intro, then a separate AI/philosophy blurb. Display the whole image without cropping and describe it accurately as a sculpture; Noah has not supplied a personal portrait. Selecting text in the AI blurb gradually reveals the Queens blue-hour artwork only under the selected text, across wrapped lines; selecting the intro does not. Keep Projects and the standalone AI-readable `/ai.html` and `/llms.txt` reachable. Project claims must come from public sources and distinguish prototypes from finished work.
+Build a narrow, portrait-first white Home with no header, decorative cards, or dividers: the approved 5:7 cobalt engraving from GitHub, compact links, a short personal intro, then a separate AI/philosophy blurb. Display the whole image without cropping and describe it accurately as a sculpture; Noah has not supplied a personal portrait. Selecting any text in the AI blurb fades the Queens blue-hour artwork behind its entire rectangle; selecting the intro does not. Keep Projects and the standalone AI-readable `/ai.html` and `/llms.txt` reachable. Project claims must come from public sources and distinguish prototypes from finished work.
 
 ## Roles and handoffs
 
@@ -18,7 +18,7 @@ Sequence: critic → implementer → independent QA → implementer fixes → in
 
 - Home and Projects each show one visible main view, and every visible link has a working destination.
 - `/#projects` and `/ai.html` open directly; Home and browser Back work. The AI page is readable without JavaScript and `/llms.txt` resolves.
-- Home is white by default. Selecting a few blurb characters reveals Queens artwork only under those characters; extending selection reveals more of the same image, and clearing selection hides it. Reduced motion removes the reveal animation.
+- Home is white by default. Selecting even a few AI-blurb characters fades Queens artwork behind the whole paragraph, including unselected lines and padding; clearing selection fades it back to white. The text stays readable and still, with no wipe or stagger. Reduced motion removes the fade.
 - No clipped title, copy, or contact controls and no horizontal overflow at 320×568, 375×667, 390×844, 430×932, 440×956, tablet, and desktop sizes.
 - Primary phone navigation, contact, and project links are at least 44×44 CSS pixels, allowing one pixel for rounding.
 - Production build and Chromium, Firefox, and WebKit browser tests pass with no page errors.

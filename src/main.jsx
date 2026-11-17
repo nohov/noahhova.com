@@ -37,14 +37,14 @@ function CopyEmail() {
 
 function App() {
   const [view, setView] = useState(currentView);
-  const [reveal, setReveal] = useState({ lines: [], active: false, width: 0, height: 0 });
+  const [reveal, setReveal] = useState({ backed: false, painted: false });
   const bioRef = useRef(null);
   const clearRevealTimer = useRef();
 
   useEffect(() => {
     const syncView = () => {
       clearTimeout(clearRevealTimer.current);
-      setReveal({ lines: [], active: false, width: 0, height: 0 });
+      setReveal({ backed: false, painted: false });
       setView(currentView());
     };
     addEventListener("hashchange", syncView);
@@ -55,39 +55,16 @@ function App() {
     const checkSelection = () => {
       const bio = bioRef.current;
       const selection = getSelection();
-      const range = selection?.rangeCount && !selection.isCollapsed ? selection.getRangeAt(0) : null;
-      const hide = () => {
-        setReveal(previous => previous.active ? { ...previous, active: false } : previous);
-        clearTimeout(clearRevealTimer.current);
-        clearRevealTimer.current = setTimeout(() => setReveal({ lines: [], active: false, width: 0, height: 0 }), 220);
-      };
-      if (!bio || !range || !range.intersectsNode(bio)) return hide();
-
-      const box = bio.getBoundingClientRect();
-      const lines = [];
-      for (const rect of range.getClientRects()) {
-        const left = Math.max(0, rect.left - box.left);
-        const right = Math.min(box.width, rect.right - box.left);
-        const top = Math.max(0, rect.top - box.top);
-        const bottom = Math.min(box.height, rect.bottom - box.top);
-        if (right - left < 1 || bottom - top < 1) continue;
-        const line = lines.find(item => Math.abs(item.top - top) < 3);
-        if (line) {
-          line.left = Math.min(line.left, left);
-          line.right = Math.max(line.right, right);
-          line.top = Math.min(line.top, top);
-          line.bottom = Math.max(line.bottom, bottom);
-        } else lines.push({ left, right, top, bottom });
-      }
-      if (!lines.length) return hide();
+      const selected = Boolean(bio && selection?.rangeCount && !selection.isCollapsed && selection.getRangeAt(0).intersectsNode(bio));
       clearTimeout(clearRevealTimer.current);
-      setReveal({ lines, active: true, width: box.width, height: box.height });
+      if (selected) return setReveal({ backed: true, painted: true });
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return setReveal({ backed: false, painted: false });
+      setReveal(previous => previous.backed ? { backed: true, painted: false } : previous);
+      clearRevealTimer.current = setTimeout(() => setReveal({ backed: false, painted: false }), 420);
     };
     document.addEventListener("selectionchange", checkSelection);
-    addEventListener("resize", checkSelection);
     return () => {
       document.removeEventListener("selectionchange", checkSelection);
-      removeEventListener("resize", checkSelection);
       clearTimeout(clearRevealTimer.current);
     };
   }, [view]);
@@ -104,10 +81,8 @@ function App() {
       </nav>
       <p className="intro">I’m Noah Hova. I like problems that fit on a page and projects that refuse to. Lately, that means working through machine-learning exercises by hand and prototyping a glasses-to-PC electronics guide.</p>
       <div className="bio-wrap">
-        <div className={`bio-reveal${reveal.active ? " is-active" : ""}`} aria-hidden="true">
-          {reveal.lines.map(line => <div className="bio-reveal-line" key={Math.round(line.top)} style={{ clipPath: `inset(${line.top}px ${Math.max(0, reveal.width - line.right)}px ${Math.max(0, reveal.height - line.bottom)}px ${line.left}px)` }} />)}
-        </div>
-        <p className={`bio${reveal.active ? " has-selection" : ""}`} ref={bioRef}>I think AI may eventually do most of our work better than we can. That leaves an older question: what makes a life good when ability is no longer rare? <a href="https://aristotle.johnhboyer.com/EN/book/1/" target="_blank" rel="noreferrer">Aristotle</a> located the good life in virtuous activity; <a href="https://texts.stoameditation.com/read/meditations/8/59" target="_blank" rel="noreferrer">Marcus Aurelius</a> wrote that we exist for one another. I suspect helping someone matters for more than the result. If a machine can do the job better, what are we still doing for each other?</p>
+        <div className={`bio-reveal${reveal.backed ? " is-backed" : ""}${reveal.painted ? " is-painted" : ""}`} aria-hidden="true" />
+        <p className={`bio${reveal.backed ? " has-selection" : ""}`} ref={bioRef}>I think AI may eventually do most of our work better than we can. That leaves an older question: what makes a life good when ability is no longer rare? <a href="https://aristotle.johnhboyer.com/EN/book/1/" target="_blank" rel="noreferrer">Aristotle</a> located the good life in virtuous activity; <a href="https://texts.stoameditation.com/read/meditations/8/59" target="_blank" rel="noreferrer">Marcus Aurelius</a> wrote that we exist for one another. I suspect helping someone matters for more than the result. If a machine can do the job better, what are we still doing for each other?</p>
       </div>
     </section> : <section className="projects" id="projects" aria-labelledby="projects-title">
       <h1 id="projects-title">Projects</h1>

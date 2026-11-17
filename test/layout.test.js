@@ -70,46 +70,50 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
         assert.equal(await page.locator(".site-links button").textContent(), "Copied", `${type.name()} Home clipboard`);
         await page.locator(".intro").evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
         await page.waitForTimeout(80);
-        assert.equal(await page.locator(".bio-reveal.is-active").count(), 0, "intro selection reveals painting");
+        assert.equal(await page.locator(".bio-reveal.is-backed").count(), 0, "intro selection reveals painting");
         await page.locator(".bio").waitFor();
         await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.setStart(el.firstChild, 0); range.setEnd(el.firstChild, 8); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
-        await page.waitForFunction(() => document.querySelector(".bio-reveal.is-active .bio-reveal-line"));
-        const partial = await page.evaluate(() => {
+        await page.waitForFunction(() => document.querySelector(".bio-reveal.is-backed.is-painted"));
+        const reveal = await page.evaluate(() => {
           const bio = document.querySelector(".bio");
-          const line = document.querySelector(".bio-reveal-line");
-          const inset = [...line.style.clipPath.matchAll(/([\d.]+)px/g)].map(match => Number(match[1]));
-          return { lines: document.querySelectorAll(".bio-reveal-line").length, width: bio.clientWidth - inset[1] - inset[3], selectedWidth: getSelection().getRangeAt(0).getBoundingClientRect().width, background: getComputedStyle(line, "::before").backgroundImage, bioBackground: getComputedStyle(bio).backgroundImage, duration: getComputedStyle(line, "::before").animationDuration };
+          const layer = document.querySelector(".bio-reveal");
+          return { bio: bio.getBoundingClientRect().toJSON(), layer: layer.getBoundingClientRect().toJSON(), background: getComputedStyle(layer, "::before").backgroundImage, duration: getComputedStyle(layer, "::before").transitionDuration, animation: getComputedStyle(layer, "::before").animationName, strips: document.querySelectorAll(".bio-reveal-line").length };
         });
-        assert.equal(partial.lines, 1, "partial selection reveals another line");
-        assert.ok(Math.abs(partial.width - partial.selectedWidth) < 3, "painting extends beyond selected text");
-        assert.ok(partial.width < 150, "partial selection reveals too much painting");
-        assert.match(partial.background, /queens-desktop/);
-        assert.equal(partial.bioBackground, "none", "entire paragraph became painted");
-        assert.equal(partial.duration, "0.65s", "painting does not fade in gradually");
-        await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.setStart(el.firstChild, 0); range.setEnd(el.firstChild, 30); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
-        await page.waitForFunction(previous => {
-          const line = document.querySelector(".bio-reveal-line");
-          const inset = [...line.style.clipPath.matchAll(/([\d.]+)px/g)].map(match => Number(match[1]));
-          return document.querySelector(".bio").clientWidth - inset[1] - inset[3] > previous + 80;
-        }, partial.width);
+        assert.equal(reveal.strips, 0, "striped reveal remains");
+        assert.ok(Math.abs(reveal.bio.width - reveal.layer.width) < 1 && Math.abs(reveal.bio.height - reveal.layer.height) < 1, "painting does not fill paragraph");
+        assert.match(reveal.background, /queens-desktop/);
+        assert.equal(reveal.animation, "none", "painting has a wipe or stagger animation");
+        assert.equal(reveal.duration, "0.42s", "painting fade is not restrained");
+        await page.waitForFunction(() => {
+          const layer = document.querySelector(".bio-reveal");
+          const opacity = Number(getComputedStyle(layer, "::before").opacity);
+          return opacity > 0 && opacity < 1;
+        });
+        assert.equal(await page.locator(".bio-reveal").evaluate(el => getComputedStyle(el).opacity), "1", "dark backing is missing during fade-in");
+        assert.equal(await page.locator(".bio").evaluate(el => getComputedStyle(el).color), "rgb(255, 255, 255)");
+        await page.waitForFunction(() => getComputedStyle(document.querySelector(".bio-reveal"), "::before").opacity === "1");
         await page.evaluate(() => getSelection().removeAllRanges());
-        await page.waitForFunction(() => !document.querySelector(".bio-reveal").classList.contains("is-active"));
-        await page.waitForFunction(() => document.querySelectorAll(".bio-reveal-line").length === 0);
+        await page.waitForFunction(() => !document.querySelector(".bio-reveal").classList.contains("is-painted"));
+        assert.equal(await page.locator(".bio-reveal").evaluate(el => getComputedStyle(el).opacity), "1", "dark backing vanished before fade-out");
+        assert.equal(await page.locator(".bio").evaluate(el => getComputedStyle(el).color), "rgb(255, 255, 255)");
+        await page.waitForFunction(() => getComputedStyle(document.querySelector(".bio-reveal")).opacity === "0");
+        assert.equal(await page.locator(".bio").evaluate(el => getComputedStyle(el).color), "rgb(23, 27, 24)");
         await page.setViewportSize({ width: 320, height: 568 });
-        await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
-        await page.waitForFunction(() => document.querySelectorAll(".bio-reveal-line").length > 3);
+        await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.setStart(el.firstChild, 0); range.setEnd(el.firstChild, 5); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
+        await page.waitForFunction(() => document.querySelector(".bio-reveal").classList.contains("is-backed"));
+        assert.ok(await page.locator(".bio").evaluate(el => el.getBoundingClientRect().height > 200), "phone paragraph did not fill multiple lines");
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
         await page.evaluate(() => getSelection().removeAllRanges());
-        await page.waitForFunction(() => document.querySelectorAll(".bio-reveal-line").length === 0);
+        await page.waitForFunction(() => !document.querySelector(".bio-reveal").classList.contains("is-backed"));
         await page.locator(".bio a").first().evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
-        await page.waitForFunction(() => document.querySelector(".bio-reveal").classList.contains("is-active"));
+        await page.waitForFunction(() => document.querySelector(".bio-reveal").classList.contains("is-backed"));
         await page.evaluate(() => { location.hash = "#projects"; });
         await page.locator("#projects-title").waitFor();
         await page.evaluate(() => { location.hash = "#top"; });
         await page.locator(".bio").waitFor();
-        assert.equal(await page.locator(".bio-reveal-line").count(), 0, "art persists after navigation");
+        assert.equal(await page.locator(".bio-reveal.is-backed").count(), 0, "art persists after navigation");
         await page.evaluate(() => getSelection().removeAllRanges());
-        await page.waitForFunction(() => !document.querySelector(".bio-reveal").classList.contains("is-active"));
+        await page.waitForFunction(() => !document.querySelector(".bio-reveal").classList.contains("is-backed"));
         assert.deepEqual(errors, []);
       } finally { await browser.close(); }
     }

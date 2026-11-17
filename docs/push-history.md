@@ -24,3 +24,7 @@ The tags are stable snapshots; the progression branch shows the actual sequence 
 ## November 17, 2026 — separate personal intro
 
 This decision adds a short Noah introduction between the link row and the AI/philosophy paragraph. The intro names the documented math and electronics work with a lighter voice. The Queens reveal remains attached only to the second paragraph. This entry ships with the decision in one branch push.
+
+## November 17, 2026 — full painting reveal
+
+The earlier text-sized strips were rejected after visual review. This decision replaces them with one Queens image behind the entire AI paragraph when any of its text is selected. Only the image fades; a dark backing keeps white text legible throughout. The separate Noah intro remains plain. This correction and its tests ship together in one decision push.
