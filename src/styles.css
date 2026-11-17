@@ -11,10 +11,17 @@ a:focus-visible { outline: 2px solid #171b18; outline-offset: 3px; }
 .site-links a, .site-links button, .projects article a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; font-size: 14px; }
 .site-links button { padding: 0; border: 0; background: none; color: inherit; font-family: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .site-links button:focus-visible { outline: 2px solid #171b18; outline-offset: 3px; }
-.bio { margin: 0 -12px; padding: 12px; font-size: 16px; line-height: 1.5; }
-.bio.is-revealed { color: #fff; background: linear-gradient(rgba(5, 19, 42, .4), rgba(5, 19, 42, .55)), url("./assets/background-variants/queens-desktop.jpg") center / cover; }
-.bio.is-revealed::selection { color: #fff; background: rgba(255,255,255,.18); }
-.bio.is-revealed a:focus-visible { outline-color: #fff; }
+.bio-wrap { position: relative; margin: 0 -12px; }
+.bio { position: relative; margin: 0; padding: 12px; font-size: 16px; line-height: 1.5; }
+.bio-reveal { position: absolute; inset: 0; pointer-events: none; }
+.bio-reveal-line { position: absolute; inset: 0; background: #0b2453; opacity: 0; transition: clip-path 650ms ease, opacity 220ms ease; }
+.bio-reveal-line::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(5, 19, 42, .2), rgba(5, 19, 42, .35)), url("./assets/background-variants/queens-desktop.jpg"); background-position: center, 15% bottom; background-size: 100% 100%, auto 280%; background-repeat: no-repeat; }
+.bio-reveal.is-active .bio-reveal-line { opacity: 1; transition: clip-path 650ms ease; }
+.bio-reveal.is-active .bio-reveal-line::before { animation: reveal-painting 650ms ease both; }
+.bio.has-selection::selection, .bio.has-selection *::selection { color: #fff; background: transparent; }
+@keyframes reveal-painting { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .bio-reveal-line, .bio-reveal.is-active .bio-reveal-line { transition: none; } .bio-reveal.is-active .bio-reveal-line::before { animation: none; } }
+@media (min-width: 601px) { .bio-reveal-line::before { background-position: center, 25% bottom; } }
 .projects { margin-top: 60px; }
 .projects h1 { margin: 0 0 46px; font-size: 48px; letter-spacing: -.06em; }
 .projects article { margin-bottom: 40px; }

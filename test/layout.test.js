@@ -67,20 +67,44 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
         await page.waitForFunction(() => document.querySelector(".site-links button").textContent !== "Email");
         assert.equal(await page.locator(".site-links button").textContent(), "Copied", `${type.name()} Home clipboard`);
         await page.locator(".bio").waitFor();
-        await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
-        await page.waitForFunction(() => document.querySelector(".bio").classList.contains("is-revealed"));
-        assert.match(await page.locator(".bio").evaluate(el => getComputedStyle(el).backgroundImage), /queens-desktop/);
+        await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.setStart(el.firstChild, 0); range.setEnd(el.firstChild, 8); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
+        await page.waitForFunction(() => document.querySelector(".bio-reveal.is-active .bio-reveal-line"));
+        const partial = await page.evaluate(() => {
+          const bio = document.querySelector(".bio");
+          const line = document.querySelector(".bio-reveal-line");
+          const inset = [...line.style.clipPath.matchAll(/([\d.]+)px/g)].map(match => Number(match[1]));
+          return { lines: document.querySelectorAll(".bio-reveal-line").length, width: bio.clientWidth - inset[1] - inset[3], selectedWidth: getSelection().getRangeAt(0).getBoundingClientRect().width, background: getComputedStyle(line, "::before").backgroundImage, bioBackground: getComputedStyle(bio).backgroundImage, duration: getComputedStyle(line, "::before").animationDuration };
+        });
+        assert.equal(partial.lines, 1, "partial selection reveals another line");
+        assert.ok(Math.abs(partial.width - partial.selectedWidth) < 3, "painting extends beyond selected text");
+        assert.ok(partial.width < 150, "partial selection reveals too much painting");
+        assert.match(partial.background, /queens-desktop/);
+        assert.equal(partial.bioBackground, "none", "entire paragraph became painted");
+        assert.equal(partial.duration, "0.65s", "painting does not fade in gradually");
+        await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.setStart(el.firstChild, 0); range.setEnd(el.firstChild, 30); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
+        await page.waitForFunction(previous => {
+          const line = document.querySelector(".bio-reveal-line");
+          const inset = [...line.style.clipPath.matchAll(/([\d.]+)px/g)].map(match => Number(match[1]));
+          return document.querySelector(".bio").clientWidth - inset[1] - inset[3] > previous + 80;
+        }, partial.width);
         await page.evaluate(() => getSelection().removeAllRanges());
-        await page.waitForFunction(() => !document.querySelector(".bio").classList.contains("is-revealed"));
+        await page.waitForFunction(() => !document.querySelector(".bio-reveal").classList.contains("is-active"));
+        await page.waitForFunction(() => document.querySelectorAll(".bio-reveal-line").length === 0);
+        await page.setViewportSize({ width: 320, height: 568 });
+        await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
+        await page.waitForFunction(() => document.querySelectorAll(".bio-reveal-line").length > 3);
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+        await page.evaluate(() => getSelection().removeAllRanges());
+        await page.waitForFunction(() => document.querySelectorAll(".bio-reveal-line").length === 0);
         await page.locator(".bio a").first().evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
-        await page.waitForFunction(() => document.querySelector(".bio").classList.contains("is-revealed"));
+        await page.waitForFunction(() => document.querySelector(".bio-reveal").classList.contains("is-active"));
         await page.evaluate(() => { location.hash = "#projects"; });
         await page.locator("#projects-title").waitFor();
         await page.evaluate(() => { location.hash = "#top"; });
         await page.locator(".bio").waitFor();
-        assert.equal(await page.locator(".bio").evaluate(el => el.classList.contains("is-revealed")), false, "art persists after navigation");
+        assert.equal(await page.locator(".bio-reveal-line").count(), 0, "art persists after navigation");
         await page.evaluate(() => getSelection().removeAllRanges());
-        await page.waitForFunction(() => !document.querySelector(".bio").classList.contains("is-revealed"));
+        await page.waitForFunction(() => !document.querySelector(".bio-reveal").classList.contains("is-active"));
         assert.deepEqual(errors, []);
       } finally { await browser.close(); }
     }
