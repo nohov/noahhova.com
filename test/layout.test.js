@@ -24,6 +24,7 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
             sectionCount: document.querySelectorAll("main section").length,
             width: document.documentElement.scrollWidth,
             portrait: document.querySelector(".portrait").getBoundingClientRect().toJSON(),
+            bioTextLeft: (() => { const bio = document.querySelector(".bio"); const range = document.createRange(); range.setStart(bio.firstChild, 0); range.setEnd(bio.firstChild, 1); return range.getBoundingClientRect().left; })(),
             links: [...document.querySelectorAll(".site-links a")].map(a => ({ href: a.getAttribute("href"), rect: a.getBoundingClientRect().toJSON() })),
             hasHeader: Boolean(document.querySelector("header")),
             reveal: getComputedStyle(document.querySelector(".bio")).backgroundImage,
@@ -33,6 +34,8 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
           assert.equal(home.hasHeader, false);
           assert.ok(home.width <= size.width, `${label}: horizontal overflow`);
           assert.ok(home.portrait.width <= size.width, `${label}: portrait clips`);
+          assert.ok(Math.abs(home.portrait.width / home.portrait.height - 5 / 7) < .01, `${label}: portrait proportions`);
+          assert.ok(Math.abs(home.bioTextLeft - home.portrait.left) < 1, `${label}: blurb alignment`);
           assert.equal(home.reveal, "none", `${label}: artwork visible by default`);
           assert.equal(home.links.length, 4);
           for (const link of home.links) assert.ok(link.href && link.rect.width >= 43 && link.rect.height >= 43, `${label}: small or dead link`);

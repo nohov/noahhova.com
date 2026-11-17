@@ -4,7 +4,7 @@ Challenge assumptions and report evidence plainly. A design score is a judgment,
 
 ## Current scope
 
-Build a narrow, portrait-first white Home with no header, decorative cards, or dividers: portrait, compact links, then one blurb. The portrait slot remains clearly marked until Noah exports the dithered image from Figma on his MacBook; do not substitute the old statue image. Selecting text in the blurb temporarily reveals the Queens blue-hour artwork behind it. Keep Projects and the standalone AI-readable `/ai.html` and `/llms.txt` reachable. Project claims must come from public sources and distinguish prototypes from finished work.
+Build a narrow, portrait-first white Home with no header, decorative cards, or dividers: a 5:7 portrait like the Slow Ventures reference, compact links, then one blurb. The portrait slot remains clearly marked until Noah exports the dithered image from Figma on his MacBook; do not substitute the old statue image. Selecting text in the blurb temporarily reveals the Queens blue-hour artwork behind it. Keep Projects and the standalone AI-readable `/ai.html` and `/llms.txt` reachable. Project claims must come from public sources and distinguish prototypes from finished work.
 
 ## Roles and handoffs
 

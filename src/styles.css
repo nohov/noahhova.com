@@ -6,10 +6,10 @@ a:focus-visible { outline: 2px solid #171b18; outline-offset: 3px; }
 ::selection { background: rgba(95, 145, 192, .45); }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .home, .projects { width: min(calc(100% - 32px), 540px); margin: 24px auto 90px; }
-.portrait { display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 5; background: #f3f3f1; color: #636861; font-size: 14px; text-align: center; }
+.portrait { display: grid; place-items: center; width: 100%; aspect-ratio: 5 / 7; background: #f3f3f1; color: #636861; font-size: 14px; text-align: center; }
 .site-links { display: flex; flex-wrap: wrap; gap: 0 18px; margin: 18px 0 20px; }
 .site-links a, .projects article a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; font-size: 14px; }
-.bio { margin: 0; padding: 12px; font-size: 16px; line-height: 1.5; }
+.bio { margin: 0 -12px; padding: 12px; font-size: 16px; line-height: 1.5; }
 .bio.is-revealed { color: #fff; background: linear-gradient(rgba(5, 19, 42, .4), rgba(5, 19, 42, .55)), url("./assets/background-variants/queens-desktop.jpg") center / cover; }
 .bio.is-revealed::selection { color: #fff; background: rgba(255,255,255,.18); }
 .projects { margin-top: 60px; }
