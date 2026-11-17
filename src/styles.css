@@ -14,6 +14,7 @@ a:focus-visible { outline: 2px solid #171b18; outline-offset: 3px; }
 .bio { margin: 0 -12px; padding: 12px; font-size: 16px; line-height: 1.5; }
 .bio.is-revealed { color: #fff; background: linear-gradient(rgba(5, 19, 42, .4), rgba(5, 19, 42, .55)), url("./assets/background-variants/queens-desktop.jpg") center / cover; }
 .bio.is-revealed::selection { color: #fff; background: rgba(255,255,255,.18); }
+.bio.is-revealed a:focus-visible { outline-color: #fff; }
 .projects { margin-top: 60px; }
 .projects h1 { margin: 0 0 46px; font-size: 48px; letter-spacing: -.06em; }
 .projects article { margin-bottom: 40px; }

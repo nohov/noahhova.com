@@ -31,6 +31,7 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
             email: document.querySelector(".site-links button").getBoundingClientRect().toJSON(),
             hasHeader: Boolean(document.querySelector("header")),
             reveal: getComputedStyle(document.querySelector(".bio")).backgroundImage,
+            citations: [...document.querySelectorAll(".bio a")].map(a => a.href),
           }));
           const label = `${type.name()} ${size.width}`;
           assert.equal(home.sectionCount, 1);
@@ -44,6 +45,7 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
           assert.ok(Math.abs(home.portrait.width / home.portrait.height - 5 / 7) < .01, `${label}: portrait proportions`);
           assert.ok(Math.abs(home.bioTextLeft - home.portrait.left) < 1, `${label}: blurb alignment`);
           assert.equal(home.reveal, "none", `${label}: artwork visible by default`);
+          assert.equal(home.citations.length, 2, `${label}: missing source links`);
           assert.equal(home.links.length, 3);
           for (const link of home.links) assert.ok(link.href && link.rect.width >= 43 && link.rect.height >= 43, `${label}: small or dead link`);
           assert.ok(home.email.width >= 43 && home.email.height >= 43, `${label}: small Email button`);
@@ -68,6 +70,10 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
         await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
         await page.waitForFunction(() => document.querySelector(".bio").classList.contains("is-revealed"));
         assert.match(await page.locator(".bio").evaluate(el => getComputedStyle(el).backgroundImage), /queens-desktop/);
+        await page.evaluate(() => getSelection().removeAllRanges());
+        await page.waitForFunction(() => !document.querySelector(".bio").classList.contains("is-revealed"));
+        await page.locator(".bio a").first().evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
+        await page.waitForFunction(() => document.querySelector(".bio").classList.contains("is-revealed"));
         await page.evaluate(() => { location.hash = "#projects"; });
         await page.locator("#projects-title").waitFor();
         await page.evaluate(() => { location.hash = "#top"; });

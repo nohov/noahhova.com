@@ -65,7 +65,7 @@ function App() {
         <a href="#projects">Projects</a>
         <a href="/ai.html">AI profile</a>
       </nav>
-      <p className={`bio${revealed ? " is-revealed" : ""}`} ref={bioRef}>I’m Noah Hova. I’m drawn to math, AI, and making small ideas tangible. Lately I’ve been exploring a glasses-to-PC electronics guide and working through machine-learning problems by hand.</p>
+      <p className={`bio${revealed ? " is-revealed" : ""}`} ref={bioRef}>I’m Noah Hova. I think AI may eventually do most of our work better than we can. That leaves an older question: what makes a life good when ability is no longer rare? <a href="https://aristotle.johnhboyer.com/EN/book/1/" target="_blank" rel="noreferrer">Aristotle</a> located the good life in virtuous activity; <a href="https://texts.stoameditation.com/read/meditations/8/59" target="_blank" rel="noreferrer">Marcus Aurelius</a> wrote that we exist for one another. I study math and AI and build small things to think through what those ideas mean now.</p>
     </section> : <section className="projects" id="projects" aria-labelledby="projects-title">
       <h1 id="projects-title">Projects</h1>
       <article><h2>ScavScrap</h2><p>A glasses-to-PC electronics guide in progress. The relay and early recognition experiment are built; the guided lesson is still planned.</p><a href="https://github.com/nohov/Sightcuit" target="_blank" rel="noreferrer">Repository</a></article>
