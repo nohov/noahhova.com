@@ -16,3 +16,7 @@ The original branch first moved from `62efe92` to `a14d493` in **one push**. Tha
 | 8 | — | `9c0ccd1` | Corrected the publication record and set the one-decision-per-push rule. |
 
 The tags are stable snapshots; the progression branch shows the actual sequence of branch pushes. This documentation update is pushed afterward as a separate step. Future approved decisions should be committed, checked, and pushed one at a time.
+
+## November 17, 2026 — progressive text highlight
+
+`28ca508` was pushed by itself after `6a6a9a8` on `codex/shopify-editions-recreation`, then advanced `codex/site-progression` in its own fast-forward push. The selected text now reveals matching pieces of one Queens painting over 650 ms; unselected text stays on white. The crop puts visible brick and window detail under the first selected words. The production build and Chromium, Firefox, and WebKit tests passed, and independent visual QA found no term below 9.5/10. A physical iPhone long-press check remains pending because the phone was offline.
