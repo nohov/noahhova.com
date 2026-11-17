@@ -1,6 +1,6 @@
 # White site acceptance
 
-The current branch presents a narrow Home with Noah's approved cobalt engraving from GitHub, compact links, and one blurb, plus Projects and a standalone AI-readable profile at `/ai.html`. The image is a dithered sculpture, not a personal portrait. Browsers that support AVIF receive a 248 KB version; the original PNG remains the fallback. Selecting blurb text gradually reveals the Queens blue-hour painting only behind the selected characters, including wrapped lines. The AI page uses semantic HTML and JSON-LD, and `/llms.txt` offers a plain-text summary.
+The current branch presents a narrow Home with Noah's approved cobalt engraving from GitHub, compact links, a short personal intro, and a separate AI/philosophy blurb, plus Projects and a standalone AI-readable profile at `/ai.html`. The image is a dithered sculpture, not a personal portrait. Browsers that support AVIF receive a 248 KB version; the original PNG remains the fallback. Selecting text in the AI blurb gradually reveals the Queens blue-hour painting only behind the selected characters, including wrapped lines; selecting the intro does not. The AI page uses semantic HTML and JSON-LD, and `/llms.txt` offers a plain-text summary.
 
 Project descriptions are based on the public [ScavScrap README](https://github.com/nohov/Sightcuit/blob/main/README.md) and [Deep-ML README](https://github.com/nohov/deep-ml/blob/main/README.md). The ScavScrap guide remains in progress; its relay and early recognition experiment exist today.
 

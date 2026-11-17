@@ -11,6 +11,7 @@ a:focus-visible { outline: 2px solid #171b18; outline-offset: 3px; }
 .site-links a, .site-links button, .projects article a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; font-size: 14px; }
 .site-links button { padding: 0; border: 0; background: none; color: inherit; font-family: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .site-links button:focus-visible { outline: 2px solid #171b18; outline-offset: 3px; }
+.intro { margin: 0 0 16px; font-size: 16px; line-height: 1.5; }
 .bio-wrap { position: relative; margin: 0 -12px; }
 .bio { position: relative; margin: 0; padding: 12px; font-size: 16px; line-height: 1.5; }
 .bio-reveal { position: absolute; inset: 0; pointer-events: none; }

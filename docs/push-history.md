@@ -20,3 +20,7 @@ The tags are stable snapshots; the progression branch shows the actual sequence 
 ## November 17, 2026 — progressive text highlight
 
 `28ca508` was pushed by itself after `6a6a9a8` on `codex/shopify-editions-recreation`, then advanced `codex/site-progression` in its own fast-forward push. The selected text now reveals matching pieces of one Queens painting over 650 ms; unselected text stays on white. The crop puts visible brick and window detail under the first selected words. The production build and Chromium, Firefox, and WebKit tests passed, and independent visual QA found no term below 9.5/10. A physical iPhone long-press check remains pending because the phone was offline.
+
+## November 17, 2026 — separate personal intro
+
+This decision adds a short Noah introduction between the link row and the AI/philosophy paragraph. The intro names the documented math and electronics work with a lighter voice. The Queens reveal remains attached only to the second paragraph. This entry ships with the decision in one branch push.

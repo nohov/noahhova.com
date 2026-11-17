@@ -25,6 +25,7 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
             sectionCount: document.querySelectorAll("main section").length,
             width: document.documentElement.scrollWidth,
             portrait: document.querySelector(".portrait").getBoundingClientRect().toJSON(),
+            intro: document.querySelector(".intro").getBoundingClientRect().toJSON(),
             image: { width: document.querySelector(".portrait").naturalWidth, height: document.querySelector(".portrait").naturalHeight, alt: document.querySelector(".portrait").alt, source: document.querySelector(".portrait").currentSrc },
             bioTextLeft: (() => { const bio = document.querySelector(".bio"); const range = document.createRange(); range.setStart(bio.firstChild, 0); range.setEnd(bio.firstChild, 1); return range.getBoundingClientRect().left; })(),
             links: [...document.querySelectorAll(".site-links a")].map(a => ({ href: a.getAttribute("href"), rect: a.getBoundingClientRect().toJSON() })),
@@ -38,6 +39,7 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
           assert.equal(home.hasHeader, false);
           assert.ok(home.width <= size.width, `${label}: horizontal overflow`);
           assert.ok(home.portrait.width <= size.width, `${label}: portrait clips`);
+          assert.ok(Math.abs(home.intro.left - home.portrait.left) < 1, `${label}: intro alignment`);
           assert.equal(home.image.width, 1080);
           assert.equal(home.image.height, 1512);
           assert.equal(home.image.alt, "Cobalt halftone sculpture with a raised hand");
@@ -66,6 +68,9 @@ test("portrait-first Home and Projects stay simple and usable", async () => {
         await page.keyboard.press("Enter");
         await page.waitForFunction(() => document.querySelector(".site-links button").textContent !== "Email");
         assert.equal(await page.locator(".site-links button").textContent(), "Copied", `${type.name()} Home clipboard`);
+        await page.locator(".intro").evaluate(el => { const range = document.createRange(); range.selectNodeContents(el); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
+        await page.waitForTimeout(80);
+        assert.equal(await page.locator(".bio-reveal.is-active").count(), 0, "intro selection reveals painting");
         await page.locator(".bio").waitFor();
         await page.locator(".bio").evaluate(el => { const range = document.createRange(); range.setStart(el.firstChild, 0); range.setEnd(el.firstChild, 8); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); });
         await page.waitForFunction(() => document.querySelector(".bio-reveal.is-active .bio-reveal-line"));

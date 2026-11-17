@@ -4,7 +4,7 @@ Challenge assumptions and report evidence plainly. A design score is a judgment,
 
 ## Current scope
 
-Build a narrow, portrait-first white Home with no header, decorative cards, or dividers: the approved 5:7 cobalt engraving from GitHub, compact links, then one blurb. Display the whole image without cropping and describe it accurately as a sculpture; Noah has not supplied a personal portrait. Selecting text in the blurb gradually reveals the Queens blue-hour artwork only under the selected text, across wrapped lines. Keep Projects and the standalone AI-readable `/ai.html` and `/llms.txt` reachable. Project claims must come from public sources and distinguish prototypes from finished work.
+Build a narrow, portrait-first white Home with no header, decorative cards, or dividers: the approved 5:7 cobalt engraving from GitHub, compact links, a short personal intro, then a separate AI/philosophy blurb. Display the whole image without cropping and describe it accurately as a sculpture; Noah has not supplied a personal portrait. Selecting text in the AI blurb gradually reveals the Queens blue-hour artwork only under the selected text, across wrapped lines; selecting the intro does not. Keep Projects and the standalone AI-readable `/ai.html` and `/llms.txt` reachable. Project claims must come from public sources and distinguish prototypes from finished work.
 
 ## Roles and handoffs
 

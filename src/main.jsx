@@ -102,11 +102,12 @@ function App() {
         <a href="#projects">Projects</a>
         <a href="/ai.html">AI profile</a>
       </nav>
+      <p className="intro">I’m Noah Hova. I like problems that fit on a page and projects that refuse to. Lately, that means working through machine-learning exercises by hand and prototyping a glasses-to-PC electronics guide.</p>
       <div className="bio-wrap">
         <div className={`bio-reveal${reveal.active ? " is-active" : ""}`} aria-hidden="true">
           {reveal.lines.map(line => <div className="bio-reveal-line" key={Math.round(line.top)} style={{ clipPath: `inset(${line.top}px ${Math.max(0, reveal.width - line.right)}px ${Math.max(0, reveal.height - line.bottom)}px ${line.left}px)` }} />)}
         </div>
-        <p className={`bio${reveal.active ? " has-selection" : ""}`} ref={bioRef}>I’m Noah Hova. I think AI may eventually do most of our work better than we can. That leaves an older question: what makes a life good when ability is no longer rare? <a href="https://aristotle.johnhboyer.com/EN/book/1/" target="_blank" rel="noreferrer">Aristotle</a> located the good life in virtuous activity; <a href="https://texts.stoameditation.com/read/meditations/8/59" target="_blank" rel="noreferrer">Marcus Aurelius</a> wrote that we exist for one another. I suspect helping someone matters for more than the result. If a machine can do the job better, what are we still doing for each other?</p>
+        <p className={`bio${reveal.active ? " has-selection" : ""}`} ref={bioRef}>I think AI may eventually do most of our work better than we can. That leaves an older question: what makes a life good when ability is no longer rare? <a href="https://aristotle.johnhboyer.com/EN/book/1/" target="_blank" rel="noreferrer">Aristotle</a> located the good life in virtuous activity; <a href="https://texts.stoameditation.com/read/meditations/8/59" target="_blank" rel="noreferrer">Marcus Aurelius</a> wrote that we exist for one another. I suspect helping someone matters for more than the result. If a machine can do the job better, what are we still doing for each other?</p>
       </div>
     </section> : <section className="projects" id="projects" aria-labelledby="projects-title">
       <h1 id="projects-title">Projects</h1>
