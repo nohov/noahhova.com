@@ -12,7 +12,7 @@ Build a narrow, portrait-first white Home with no header, decorative cards, or d
 2. **Implementer (single writer):** own source, styles, and acceptance tests. Resolve the critic's findings, run `npm test`, and provide the exact changed files for review.
 3. **Independent QA (read-only):** review the implemented version without editing it. Run `npm test`; inspect desktop and 320–440px iPhone-sized views; check the text-selection reveal and clearing, keyboard access, links, overflow, deep links and Back, factual project copy, AI page without JavaScript, and console errors. Report evidence and scores for composition, iPhone layout, interaction, accessibility/performance, and project credibility. Identify every term below 9.5 with a reproducible issue.
 
-Sequence: critic → implementer → independent QA → implementer fixes → independent QA retest. Keep source edits with the implementer so review stays independent. Work on the current `codex/` branch unless Noah requests another branch. No external push or deployment is implied by local review.
+Sequence: critic → implementer → independent QA → implementer fixes → independent QA retest. Keep source edits with the implementer so review stays independent. Work on the current `codex/` branch unless Noah requests another branch. No external push or deployment is implied by local review. When Noah explicitly requests publication, commit, check, and push each completed decision separately; do not batch decisions into one push or rewrite published history to simulate earlier pushes.
 
 ## Measurable release gates
 

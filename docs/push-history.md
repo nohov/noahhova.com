@@ -1,15 +1,21 @@
-# Site push history
+# Site publication history
 
 ## November 16, 2026 — `codex/shopify-editions-recreation`
 
-This push publishes the local work since the previously published branch tip, `62efe92` (November 13). The commits remain separate so the design's progression can be followed in Git history:
+The branch first moved from `62efe92` to `a14d493` in **one push**. That preserved seven separate commits, but it did not publish each decision separately. The original push cannot be undone.
 
-1. `66b44ca` — Moved to a white site with Human and AI views. This layout was later simplified.
-2. `6ee4953` — Replaced the hero with a portrait-first Home and added the Queens artwork reveal on text selection.
-3. `ec259af` — Matched the portrait area to the reference's 5:7 proportions.
-4. `2d0adcb` — Added the approved cobalt engraving, a smaller AVIF for modern browsers, and Email copy feedback.
-5. `a8052ba` — Rewrote the bio around AI, Aristotle, and Marcus Aurelius, with links to the source texts.
-6. `2473bfd` — Tried a more pointed closing question; the next edit refines its wording.
-7. Current commit — Gave the closing a plain, qualified hunch and a concrete question.
+Each decision was then published as its own annotated tag in **seven separate tag pushes**, in this order:
 
-The current Home has one image, a small link row, and one blurb. Projects and the standalone AI-readable page remain available. This record describes one branch push, not seven separate pushes.
+| Push | Snapshot | Commit | Decision |
+| --- | --- | --- | --- |
+| 1 | `site-decision/01-white-layout` | `66b44ca` | White Home with Human and AI views; later simplified. |
+| 2 | `site-decision/02-portrait-home` | `6ee4953` | Portrait-first Home and Queens reveal on text selection. |
+| 3 | `site-decision/03-five-seven-frame` | `ec259af` | 5:7 image frame matching the reference. |
+| 4 | `site-decision/04-cobalt-email` | `2d0adcb` | Approved cobalt artwork, optimized delivery, and Email copy feedback. |
+| 5 | `site-decision/05-philosophical-bio` | `a8052ba` | AI question with Aristotle and Marcus Aurelius source links. |
+| 6 | `site-decision/06-closing-question` | `2473bfd` | First revised closing question. |
+| 7 | `site-decision/07-final-bio` | `a14d493` | Plain, qualified closing hunch and question. |
+
+Tags are browseable snapshots. They do not retroactively turn the first branch update into seven branch pushes. Future approved decisions should be committed, checked, and pushed one at a time.
+
+This history correction is itself published as a later, separate branch push.
